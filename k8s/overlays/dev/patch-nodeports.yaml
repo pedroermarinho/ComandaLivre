@@ -1,0 +1,55 @@
+# Patch para o Backend
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080
+
+---
+# Patch para o MailHog
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailhog-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8025
+      targetPort: 8025
+      nodePort: 30025
+
+---
+# Patch para o Postgres
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - port: 5432
+      nodePort: 30432
+
+---
+# Patch para o keycloak
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30082

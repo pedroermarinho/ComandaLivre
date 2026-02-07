@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: comandalivre
+data:
+  # --- GERAL ---
+  PORT: "8080"
+  
+  # --- FEATURE FLAGS ---
+  FIREBASE_APP_CHECK_ENABLED: "false"
+  DISCORD_WEBHOOKS_ENABLED: "false"
+  
+  # --- AWS / S3 ---
+  AWS_BUCKET: "comanda-livre"
+  AWS_REGION: "sa-east-1"
+  AWS_ENDPOINT: "http://minio-service:9000"
+
+  # --- E-mail ---
+  MAIL_HOST: "mailhog-service"
+  MAIL_PORT: "1025"
+  MAIL_AUTH: "false"
+  MAIL_STARTTLS_ENABLE: "false"
+
+  # --- BANCO DE DADOS ---
+  # TODO: corrigir user e password para os locais corretos ou montar essa url de forma dinamica 
+  JDBC_DATABASE_URL: "jdbc:postgresql://postgres-service:5432/comanda_livre?user=comanda_livre&password=password"
+
+  # --- AUTH ---
+  GOOGLE_JWK_SET_URI: "http://keycloak-service:8080/realms/comandalivre/protocol/openid-connect/certs"
+
+  # --- CACHE ---
+  CACHE_TYPE: "caffeine"

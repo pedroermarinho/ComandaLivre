@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: comandalivre
+
+# 1. Herda tudo da base
+resources:
+  - ../../base
+  - config.yaml
+  - secrets.yaml
+
+# 2. Aplica os patches para transformar em NodePort
+patches:
+  - path: patch-nodeports.yaml
+
+# 3. (Opcional) Força a imagem local para garantir que pegue a última build
+images:
+  - name: comandalivre/api
+    newTag: latest

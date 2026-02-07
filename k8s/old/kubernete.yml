@@ -1,0 +1,439 @@
+# Este arquivo define toda a infraestrutura do cluster Kubernetes para o projeto Comanda Livre.
+# sh: kubectl apply -f kubernete.yml
+
+# ====================================================
+# 1. NAMESPACE
+# ====================================================
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: comandalivre
+---
+
+# ====================================================
+# 2. CONFIGURAÇÕES NÃO SENSÍVEIS
+# ====================================================
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: comandalivre
+data:
+  # --- GERAL ---
+  PORT: "8080"
+  
+  # --- FEATURE FLAGS ---
+  FIREBASE_APP_CHECK_ENABLED: "false"
+  DISCORD_WEBHOOKS_ENABLED: "false"
+  
+  # --- AWS / S3 ---
+  AWS_BUCKET: "comanda-livre"
+  AWS_REGION: "sa-east-1"
+  AWS_ENDPOINT: "http://minio-service:9000"
+
+  # --- E-mail ---
+  MAIL_HOST: "mailhog-service"
+  MAIL_PORT: "1025"
+  MAIL_AUTH: "false"
+  MAIL_STARTTLS_ENABLE: "false"
+
+  # --- BANCO DE DADOS ---
+  # TODO: corrigir user e password para os locais corretos ou montar essa url de forma dinamica 
+  JDBC_DATABASE_URL: "jdbc:postgresql://postgres-service:5432/comanda_livre?user=comanda_livre&password=password"
+
+  # --- AUTH ---
+  # GOOGLE_ISSUER_URI: "http://keycloak-service:8080/realms/comandalivre"
+  GOOGLE_JWK_SET_URI: "http://keycloak-service:8080/realms/comandalivre/protocol/openid-connect/certs"
+
+  # --- CACHE ---
+  CACHE_TYPE: "caffeine"
+
+  # --- OUTROS ---
+  # TODO: talvez passsar para o secrect
+  DEFAULT_ADMIN_EMAILS: "pedro.marinho238@gmail.com, pedroermarinho@gmail.com"
+
+---
+
+# ====================================================
+# 3. SEGREDOS (Secret)
+# ====================================================
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+  namespace: comandalivre
+type: Opaque
+stringData:
+  DB_USER: "comanda_livre"
+  DB_PASS: "password"
+  MINIO_USER: "admin"
+  MINIO_PASS: "password"
+  KC_ADMIN: "admin"
+  KC_PASS: "admin"
+  AWS_ACCESS_KEY: "admin"
+  AWS_SECRET_KEY: "password"
+  MAIL_USERNAME: "no-reply@comandalivre.local"
+  MAIL_PASSWORD: ""
+---
+
+# ====================================================
+# 4. INFRAESTRUTURA DE DADOS
+# ====================================================
+
+# --- POSTGRES PRINCIPAL ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: comandalivre
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 5Gi
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: comandalivre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:17-alpine3.21
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          valueFrom: { secretKeyRef: { name: app-secrets, key: DB_USER } }
+        - name: POSTGRES_PASSWORD
+          valueFrom: { secretKeyRef: { name: app-secrets, key: DB_PASS } }
+        - name: POSTGRES_DB
+          value: comanda_livre
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+      nodePort: 30432
+---
+
+# --- REDIS ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: comandalivre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis/redis-stack:latest
+        ports:
+        - containerPort: 6379
+        - containerPort: 8001
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  namespace: comandalivre
+spec:
+  selector:
+    app: redis
+  ports:
+    - name: redis
+      port: 6379
+    - name: ui
+      port: 8001
+
+---
+# --- MINIO (Object Storage) ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: comandalivre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      containers:
+      - name: minio
+        image: quay.io/minio/minio
+        args:
+          - server
+          - /data
+          - --console-address
+          - :9001
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom: { secretKeyRef: { name: app-secrets, key: MINIO_USER } }
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom: { secretKeyRef: { name: app-secrets, key: MINIO_PASS } }
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: minio-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: comandalivre
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-service
+  namespace: comandalivre
+spec:
+  selector:
+    app: minio
+  ports:
+    - name: api
+      port: 9000
+    - name: console
+      port: 9001
+---
+# --- MAILHOG ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mailhog
+  namespace: comandalivre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mailhog
+  template:
+    metadata:
+      labels:
+        app: mailhog
+    spec:
+      containers:
+      - name: mailhog
+        image: mailhog/mailhog
+        ports:
+        - containerPort: 1025
+        - containerPort: 8025
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mailhog-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  selector:
+    app: mailhog
+  ports:
+    - name: smtp
+      port: 1025
+    - name: http
+      port: 8025
+      targetPort: 8025
+      nodePort: 30025
+---
+# ====================================================
+# 5. IDENTITY PROVIDER (Keycloak + DB)
+# ====================================================
+
+# --- KEYCLOAK POSTGRES ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-keycloak
+  namespace: comandalivre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-keycloak
+  template:
+    metadata:
+      labels:
+        app: postgres-keycloak
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        env:
+        - name: POSTGRES_DB
+          value: keycloak
+        - name: POSTGRES_USER
+          value: keycloak
+        - name: POSTGRES_PASSWORD
+          value: keycloak
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-keycloak-service
+  namespace: comandalivre
+spec:
+  selector:
+    app: postgres-keycloak
+  ports:
+    - port: 5432
+---
+# --- KEYCLOAK APP ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: comandalivre
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:25.0.2
+        command: ["/opt/keycloak/bin/kc.sh", "start-dev"]
+        ports:
+        - containerPort: 8080
+        env:
+        - name: KC_DB
+          value: postgres
+        - name: KC_DB_URL
+          value: jdbc:postgresql://postgres-keycloak-service:5432/keycloak
+        - name: KC_DB_USERNAME
+          value: keycloak
+        - name: KC_DB_PASSWORD
+          value: keycloak
+        - name: KEYCLOAK_ADMIN
+          valueFrom: { secretKeyRef: { name: app-secrets, key: KC_ADMIN } }
+        - name: KEYCLOAK_ADMIN_PASSWORD
+          valueFrom: { secretKeyRef: { name: app-secrets, key: KC_PASS } }
+        - name: KC_PROXY
+          value: edge # Importante se usar Ingress
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: keycloak-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  selector:
+    app: keycloak
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30082
+---
+
+# ====================================================
+# 6. PROJETOS
+# ====================================================
+
+
+# --- BACKEND API ---
+# push imagem, sh: kind load docker-image comandalivre/api:latest --name comanda-livre 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api
+  namespace: comandalivre
+  labels:
+    app: backend-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      labels:
+        app: backend-api
+    spec:
+      containers:
+      - name: backend-api
+        image: comandalivre/api:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: app-config
+        - secretRef:
+            name: app-secrets
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "2"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  selector:
+    app: backend-api
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080

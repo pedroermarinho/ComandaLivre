@@ -1,0 +1,27 @@
+# Configuração do cluster Kind para o projeto Comanda Livre
+# Criar :sh: kind create cluster --config kind-config.yaml
+# Deletar :sh: kind delete cluster --name comanda-livre
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: comanda-livre
+nodes:
+- role: control-plane
+  extraPortMappings:
+  # BACKEND API
+  - containerPort: 30080 
+    hostPort: 8080
+    listenAddress: "127.0.0.1"
+    protocol: TCP
+  # KEYCLOAK
+  - containerPort: 30082
+    hostPort: 8082
+    protocol: TCP
+  # POSTGRES PRINCIPAL
+  - containerPort: 30432
+    hostPort: 5432
+    protocol: TCP
+  # MAILHOG
+  - containerPort: 30025
+    hostPort: 8025
+    protocol: TCP

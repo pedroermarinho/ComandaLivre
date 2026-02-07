@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - infra/postgres.yaml
+  - infra/redis.yaml
+  - infra/minio.yaml
+  - infra/mailhog.yaml
+  - auth/keycloak.yaml
+  - apps/backend.yaml

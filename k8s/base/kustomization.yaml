@@ -8,4 +8,8 @@ resources:
   - infra/minio.yaml
   - infra/mailhog.yaml
   - auth/keycloak.yaml
-  - apps/backend.yaml
+  # - apps/backend.yaml
+  - apps/company-service.yaml
+  - apps/comandalivre-service.yaml
+  - apps/prumodigital-service.yaml
+  - apps/user-service.yaml

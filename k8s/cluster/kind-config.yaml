@@ -8,14 +8,26 @@ name: comanda-livre
 nodes:
 - role: control-plane
   extraPortMappings:
-  # BACKEND API
+  # COMANDALIVRE-SERVICE
   - containerPort: 30080 
     hostPort: 8080
     listenAddress: "127.0.0.1"
     protocol: TCP
-  # KEYCLOAK
+  # COMPANY-SERVICE
+  - containerPort: 30081
+    hostPort: 8081
+    protocol: TCP
+  # USER-SERVICE
   - containerPort: 30082
     hostPort: 8082
+    protocol: TCP
+  # PRUMODIGITAL-SERVICE
+  - containerPort: 30083
+    hostPort: 8083
+    protocol: TCP
+  # KEYCLOAK
+  - containerPort: 30090
+    hostPort: 8090
     protocol: TCP
   # POSTGRES PRINCIPAL
   - containerPort: 30432

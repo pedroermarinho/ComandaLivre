@@ -2,7 +2,18 @@
 
 O **Comanda Livre** é um projeto para gerenciamento de comandas em restaurantes. Este repositório atua como meu **laboratório de engenharia**, onde aplico conceitos de arquitetura, escalabilidade e novas tecnologias conforme evoluo em minha jornada como desenvolvedor.
 
-Atualmente, o projeto está em transição de um **Monolito Modular** (Spring Modulith) que rodava em Docker Compose para uma infraestrutura orquestrada por **Kubernetes (K8s)**.
+Atualmente, o projeto evoluiu de um **Monolito Modular** (Spring Modulith) para uma arquitetura de **Microsserviços** organizada em um **Monorepo**, orquestrada por **Kubernetes (K8s)** e automatizada via **Gradle Kotlin DSL**.
+
+---
+
+## 🏗️ Estrutura do Monorepo
+
+O projeto está dividido em serviços independentes localizados na pasta `/services`:
+
+* **comandalivre-service:** Gestão de comandas.
+* **company-service:** Gestão de empresas e unidades.
+* **user-service:** Gestão de usuários e permissões.
+* **prumodigital-service:** Gestão de obras (outro aplicativo).
 
 ---
 
@@ -22,77 +33,63 @@ Nesta etapa inicial, o foco foi a migração completa dos recursos auxiliares e 
 
 ---
 
-## 📂 Estrutura de Diretórios
+## 🛠️ Central de Automação (Engineering Lab)
 
-A organização segue o padrão de **Base/Overlays** do Kustomize:
+Para eliminar o trabalho manual repetitivo, o `build.gradle.kts` na raiz do projeto atua como um orquestrador. Você pode gerenciar todo o ciclo de vida do ambiente local com os comandos abaixo:
+
+### Comandos de Infraestrutura (Kind)
+
+| Comando | Descrição |
+| --- | --- |
+| `./gradlew createCluster` | Cria o cluster Kind utilizando o `kind-config.yaml`. |
+| `./gradlew deleteCluster` | Remove o cluster Kind `comanda-livre`. |
+| `./gradlew printLabStatus` | Lista todos os serviços registrados e suas versões atuais. |
+
+### Ciclo de Desenvolvimento e Deploy
+
+| Comando | Descrição |
+| --- | --- |
+| `./gradlew buildImages` | Gera as imagens Docker para todos os serviços usando Buildpacks. |
+| `./gradlew loadImagesToKind` | Builda e injeta as imagens nos nós do Kind (evita buscar no Docker Hub). |
+| **`./gradlew deployDev`** | **O comando mestre.** Executa o build, carrega no Kind e aplica o Kustomize. |
+
+---
+
+## 📂 Organização do Projeto
 
 ```text
 .
 ├── k8s
-│   ├── base                   # Recursos compartilhados (Deployments/Services)
-│   │   ├── apps               # Manifesto da API Backend
-│   │   ├── auth               # Instância do Keycloak
-│   │   ├── infra              # Recursos de apoio (DB, Cache, Mail, Storage)
-│   │   └── namespace.yaml
+│   ├── base                   # Recursos base compartilhados
+│   │   ├── apps               # Manifestos dos microsserviços
+│   │   ├── auth               # Keycloak (IAM)
+│   │   └── infra              # DB, Cache, Mail, Storage
 │   ├── cluster                # Configuração do Cluster Kind
-│   │   └── kind-config.yaml
-│   ├── old                    # Histórico da migração (Antigo arquivo único)
-│   │   └── kubernete.yml
-│   └── overlays
-│       └── dev                # Patches, ConfigMaps e Secrets para ambiente local
-│           ├── config.yaml
-│           ├── patch-nodeports.yaml
-│           └── secrets.yaml
-└── screenshots                
+│   └── overlays/dev           # Customizações para ambiente local (Patches/Secrets)
+├── services                   # Código fonte dos microsserviços (Kotlin/Spring Boot)
+│   ├── comandalivre-service
+│   ├── company-service
+│   ├── user-service
+│   └── prumodigital-service
+└── build.gradle.kts           # Orquestrador de automação              
 
 ```
 
 ---
 
-## 🛠️ Comandos Úteis
+## 🌐 Onde acessar? (Ambiente Dev)
 
-### Gestão do Cluster (Kind)
+Graças ao mapeamento de portas configurado, os serviços são acessíveis diretamente via `localhost`:
 
-```bash
-# Criar o cluster com o mapeamento de portas necessário
-kind create cluster --config k8s/cluster/kind-config.yaml
-
-# Deletar o cluster
-kind delete cluster --name comanda-livre
-
-```
-
-### 📦 Preparando a Imagem (Local)
-
-Antes de aplicar os manifestos, certifique-se de que a imagem do backend está disponível no nó do cluster:
-
-```bash
-
-kind load docker-image comandalivre/api:latest --name comanda-livre
-
-```
-
-### Gestão de Manifestos (Kustomize)
-
-```bash
-# Validar as configurações geradas sem aplicar
-kubectl kustomize k8s/overlays/dev
-
-# Aplicar todas as alterações no cluster
-kubectl apply -k k8s/overlays/dev
-
-```
-
-#### 🌐 Onde acessar?
-
-Após o deploy, os serviços estarão disponíveis nas seguintes portas (mapeadas via `extraPortMappings` no Kind):
-
-| Serviço | URL Local | Porta K8s (NodePort) |
+| Serviço | URL Local | Porta Host |
 | --- | --- | --- |
-| **API Backend** | `http://localhost:8080` | 30080 |
-| **Keycloak UI** | `http://localhost:8082` | 30082 |
-| **MailHog Web** | `http://localhost:8025` | 30025 |
-| **Postgres** | `localhost:5432` | 30432 |
+| **ComandaLivre Service** | `http://localhost:8080` | 8080 |
+| **Company Service** | `http://localhost:8081` | 8081 |
+| **User Service** | `http://localhost:8082` | 8082 |
+| **PrumoDigital Service** | `http://localhost:8083` | 8083 |
+| **Keycloak UI** | `http://localhost:8090` | 8090 |
+| **MailHog Web** | `http://localhost:8025` | 8025 |
+| **PostgreSQL** | `localhost:5432` | 5432 |
 
 ---
 
@@ -106,9 +103,11 @@ Após o deploy, os serviços estarão disponíveis nas seguintes portas (mapeada
 
 ## 🛤️ Próximos Passos
 
-* [ ] Publicar o codigo fonte da API e do Frontend Web (Flutter).
-* [ ] Implementar mensageria com **Kafka** (Migração da `spring-modulith-events-api`).
-* [ ] Criar scripts de automação para tarefas repetitivas.
-* [ ] Iniciar a extração de microservices.
-* [ ] Implementar comunicação entre serviços via **gRPC**.
-* [ ] Adicionar um **API Gateway** para centralizar as chamadas.
+* [x] Orquestração de Infra: Subir todos os serviços de apoio (DB, Cache, Auth, Storage) no Kubernetes.s
+* [x] Estrutura de Microsserviços: Criação dos skeletons dos projetos utilizando Spring Boot CLI e Kotlin DSL.
+* [x] Automação de Engenharia: Ciclo total de Build, Load e Deploy local automatizado via Gradle.
+* [ ] Gestão de Código: Publicação do código fonte inicial dos microsserviços no Monorepo.
+* [ ] Mensageria: Implementar eventos assíncronos com Kafka para comunicação entre domínios.
+* [ ] Comunicação Inter-serviços: Implementar chamadas síncronas utilizando gRPC ou Spring's HTTP Interface.
+* [ ] API Gateway: Centralizar o roteamento e segurança das chamadas externas em um único ponto de entrada.
+* [ ] Subir o codigo do Frontend Web/Mobile (Flutter).

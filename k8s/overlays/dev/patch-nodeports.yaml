@@ -1,8 +1,8 @@
-# Patch para o Backend
+# Patch para o comandalivre
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: comandalivre-service
   namespace: comandalivre
 spec:
   type: NodePort
@@ -11,7 +11,48 @@ spec:
       port: 8080
       targetPort: 8080
       nodePort: 30080
-
+---
+# Patch para o Company
+apiVersion: v1
+kind: Service
+metadata:
+  name: company-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30081
+---
+# Patch para o User
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30082
+---
+# Patch para o PrumoDigital
+apiVersion: v1
+kind: Service
+metadata:
+  name: prumodigital-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30083
 ---
 # Patch para o MailHog
 apiVersion: v1
@@ -52,4 +93,4 @@ spec:
   ports:
     - port: 8080
       targetPort: 8080
-      nodePort: 30082
+      nodePort: 30090

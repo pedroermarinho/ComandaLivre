@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-api
+  name: comandalivre-service
   namespace: comandalivre
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend-api
+      app: comandalivre-service
   template:
     metadata:
       labels:
-        app: backend-api
+        app: comandalivre-service
     spec:
       containers:
-      - name: backend-api
-        image: comandalivre/api:latest
+      - name: comandalivre-service
+        image: comandalivre/comandalivre-service:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8080
@@ -35,11 +35,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend-service
+  name: comandalivre-service
   namespace: comandalivre
 spec:
   selector:
-    app: backend-api
+    app: comandalivre-service
   ports:
     - name: http
       port: 8080

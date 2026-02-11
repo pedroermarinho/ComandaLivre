@@ -1,0 +1,65 @@
+{
+    "realm": "comandalivre",
+    "enabled": true,
+    "displayName": "ComandaLivre Dev Realm",
+    "users": [
+        {
+            "username": "teste@comandalivre.com.br",
+            "email": "teste@comandalivre.com.br",
+            "enabled": true,
+            "emailVerified": true,
+            "firstName": "Usuário",
+            "lastName": "Teste",
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "teste123",
+                    "temporary": false
+                }
+            ]
+        }
+    ],
+    "clients": [
+        {
+            "clientId": "backend",
+            "name": "Backend API",
+            "enabled": true,
+            "protocol": "openid-connect",
+            "publicClient": false,
+            "secret": "backend-secret-fixa-123",
+            "directAccessGrantsEnabled": true,
+            "serviceAccountsEnabled": true,
+            "standardFlowEnabled": false
+        },
+        {
+            "clientId": "app",
+            "name": "Mobile App Flutter",
+            "enabled": true,
+            "protocol": "openid-connect",
+            "publicClient": true,
+            "standardFlowEnabled": true,
+            "directAccessGrantsEnabled": false,
+            "redirectUris": [
+                "*"
+            ],
+            "webOrigins": [
+                "*"
+            ]
+        },
+        {
+            "clientId": "test",
+            "name": "Test Client (Simula App)",
+            "enabled": true,
+            "protocol": "openid-connect",
+            "publicClient": true,
+            "standardFlowEnabled": true,
+            "directAccessGrantsEnabled": false,
+            "redirectUris": [
+                "*"
+            ],
+            "webOrigins": [
+                "*"
+            ]
+        }
+    ]
+}

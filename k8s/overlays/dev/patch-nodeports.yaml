@@ -54,6 +54,21 @@ spec:
       targetPort: 8080
       nodePort: 30083
 ---
+# Patch para o API Gateway
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      nodePort: 30084
+---
+
 # Patch para o MailHog
 apiVersion: v1
 kind: Service
@@ -67,6 +82,10 @@ spec:
       port: 8025
       targetPort: 8025
       nodePort: 30025
+    - name: smtp
+      port: 1025
+      targetPort: 1025
+      nodePort: 30010
 
 ---
 # Patch para o Postgres
@@ -94,3 +113,39 @@ spec:
     - port: 8080
       targetPort: 8080
       nodePort: 30090
+
+---
+# Patch para o Grafana
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30300
+
+---
+# Patch para o OpenTelemetry Collector
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector-service
+  namespace: comandalivre
+spec:
+  type: NodePort
+  ports:
+    - name: otlp-grpc
+      port: 4317
+      targetPort: 4317
+      nodePort: 30437
+    - name: otlp-http
+      port: 4318
+      targetPort: 4318
+      nodePort: 30438
+    - name: metrics
+      port: 8889
+      targetPort: 8889

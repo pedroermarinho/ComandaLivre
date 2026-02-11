@@ -1,0 +1,28 @@
+type Query {
+    hello: String
+    allServices: [LabService]
+    featuredService: LabService
+    findServiceById(id: ID!): LabService
+}
+
+type Mutation {
+    # Cria um novo serviço e retorna o objeto criado
+    createService(input: ServiceInput!): LabService
+
+    # Deleta um serviço e retorna se deu certo
+    deleteService(id: ID!): Boolean
+}
+
+type LabService {
+    id: ID
+    name: String
+    description: String
+    active: Boolean
+}
+
+input ServiceInput {
+    name: String!
+    description: String
+    active: Boolean
+}
+

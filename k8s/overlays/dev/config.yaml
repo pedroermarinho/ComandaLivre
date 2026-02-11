@@ -31,3 +31,8 @@ data:
 
   # --- CACHE ---
   CACHE_TYPE: "caffeine"
+
+  # --- OTEL ---
+  OTEL_METRICS_URL: "http://otel-collector-service:4318/v1/metrics"
+  OTEL_TRACES_URL: "http://otel-collector-service:4318/v1/traces"
+  OTEL_LOGS_URL: "http://otel-collector-service:4318/v1/logs"

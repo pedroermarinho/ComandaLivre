@@ -82,6 +82,17 @@ tasks.register("loadImagesToKind"){
     }
 }
 
+tasks.register("ApplyDevOverlay"){
+    group = "engineering-lab"
+    description = "Aplica o overlay de desenvolvimento utilizando o Kustomize."
+
+    dependsOn("createCluster")
+
+    exec {
+        commandLine("kubectl", "apply", "-k", "k8s/overlays/dev")
+    }
+}
+
 
 tasks.register("deployDev") {
     group = "engineering-lab"
@@ -104,6 +115,8 @@ tasks.register("deployDev") {
         println("   - PrumoDigital: http://localhost:8083")
         println("   - Keycloak:     http://localhost:8090")
         println("   - MailHog:      http://localhost:8025")
+        println("   - GRAFANA:      http://localhost:3000")
+        println("   - GRAFANA:      http://localhost:3000")
         println("--------------------------------------------------\n")
     }
 }

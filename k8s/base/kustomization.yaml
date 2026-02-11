@@ -3,13 +3,46 @@ kind: Kustomization
 
 resources:
   - namespace.yaml
+  # infra
   - infra/postgres.yaml
   - infra/redis.yaml
   - infra/minio.yaml
   - infra/mailhog.yaml
   - auth/keycloak.yaml
-  # - apps/backend.yaml
+  # observability
+  - observability/otel-collector.yaml
+  - observability/prometheus.yaml
+  - observability/loki.yaml
+  - observability/grafana.yaml
+  # apps
   - apps/company-service.yaml
   - apps/comandalivre-service.yaml
   - apps/prumodigital-service.yaml
   - apps/user-service.yaml
+  - apps/api-gateway-service.yaml
+
+configMapGenerator:
+  - name: grafana-datasources
+    namespace: comandalivre
+    options:
+      disableNameSuffixHash: true
+    files:
+      - datasources.yaml=observability/configs/datasources.yaml
+  - name: prometheus-config
+    namespace: comandalivre
+    options:
+      disableNameSuffixHash: true
+    files:
+      - prometheus.yml=observability/configs/prometheus.yml
+  - name: otel-collector-config
+    namespace: comandalivre
+    options:
+      disableNameSuffixHash: true
+    files:
+      - relay.yaml=observability/configs/relay.yaml
+  - name: keycloak-realm-config
+    namespace: comandalivre
+    options:
+      disableNameSuffixHash: true
+    files:
+      - realm-export.json=auth/configs/realm-export.json

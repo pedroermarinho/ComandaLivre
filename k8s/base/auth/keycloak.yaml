@@ -60,7 +60,7 @@ spec:
       containers:
       - name: keycloak
         image: quay.io/keycloak/keycloak:25.0.2
-        command: ["/opt/keycloak/bin/kc.sh", "start-dev"]
+        command: ["/opt/keycloak/bin/kc.sh", "start-dev", "--import-realm"]
         ports:
         - containerPort: 8080
         env:
@@ -78,6 +78,11 @@ spec:
           valueFrom: { secretKeyRef: { name: app-secrets, key: KC_PASS } }
         - name: KC_PROXY
           value: edge
+        volumeMounts:
+        - name: realm-volume
+          mountPath: /opt/keycloak/data/import/realm-export.json
+          subPath: realm-export.json
+          readOnly: true
         resources:
           requests:
             cpu: "200m"      
@@ -85,6 +90,10 @@ spec:
           limits:
             cpu: "1000m"
             memory: "1.5Gi" 
+      volumes:
+      - name: realm-volume
+        configMap:
+          name: keycloak-realm-config
 ---
 apiVersion: v1
 kind: Service

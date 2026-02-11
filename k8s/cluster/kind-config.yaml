@@ -25,6 +25,10 @@ nodes:
   - containerPort: 30083
     hostPort: 8083
     protocol: TCP
+  # API-GATEWAY-SERVICE
+  - containerPort: 30084
+    hostPort: 8084
+    protocol: TCP
   # KEYCLOAK
   - containerPort: 30090
     hostPort: 8090
@@ -36,4 +40,18 @@ nodes:
   # MAILHOG
   - containerPort: 30025
     hostPort: 8025
+    protocol: TCP
+  - containerPort: 30010
+    hostPort: 1025
+    protocol: TCP
+  # GRAFANA
+  - containerPort: 30300
+    hostPort: 3000
+    protocol: TCP
+  # OpenTelemetry Collector
+  - containerPort: 30437
+    hostPort: 4317
+    protocol: TCP
+  - containerPort: 30438
+    hostPort: 4318
     protocol: TCP

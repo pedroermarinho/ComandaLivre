@@ -46,3 +46,9 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - realm-export.json=auth/configs/realm-export.json
+  - name: loki-config
+    namespace: comandalivre
+    options:
+      disableNameSuffixHash: true
+    files:
+      - loki-config.yaml=observability/configs/loki-config.yaml

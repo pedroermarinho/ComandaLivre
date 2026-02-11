@@ -42,7 +42,6 @@ dependencies {
 	implementation("io.micrometer:micrometer-registry-otlp")
 	implementation("io.micrometer:micrometer-tracing-bridge-otel")
 	implementation("io.opentelemetry:opentelemetry-exporter-otlp")
-	implementation("io.opentelemetry.instrumentation:opentelemetry-logback-appender-1.0:2.24.0-alpha")
 
 
 	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

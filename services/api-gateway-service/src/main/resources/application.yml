@@ -16,7 +16,7 @@ management:
     tracing:
         sampling:
             probability: 1.0
-        
+
     otlp:
         metrics:
             export:
@@ -26,6 +26,3 @@ management:
             endpoint: ${OTEL_TRACES_URL:http://localhost:4318/v1/traces}
         logging:
             endpoint: ${OTEL_LOGS_URL:http://localhost:4318/v1/logs}
-        logs:
-            endpoint: ${OTEL_LOGS_URL:http://localhost:4318/v1/logs}
-

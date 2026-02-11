@@ -55,3 +55,7 @@ nodes:
   - containerPort: 30438
     hostPort: 4318
     protocol: TCP
+  # Prometheus
+  - containerPort: 30490
+    hostPort: 9090
+    protocol: TCP

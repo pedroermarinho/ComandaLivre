@@ -88,19 +88,6 @@ spec:
       nodePort: 30010
 
 ---
-# Patch para o Postgres
-apiVersion: v1
-kind: Service
-metadata:
-  name: postgres-service
-  namespace: comandalivre
-spec:
-  type: NodePort
-  ports:
-    - port: 5432
-      nodePort: 30432
-
----
 # Patch para o keycloak
 apiVersion: v1
 kind: Service

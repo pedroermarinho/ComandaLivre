@@ -8,6 +8,7 @@ resources:
   - ../../base
   - config.yaml
   - secrets.yaml
+  - postgres-nodeport.yaml
 
 # 2. Aplica os patches para transformar em NodePort
 patches:

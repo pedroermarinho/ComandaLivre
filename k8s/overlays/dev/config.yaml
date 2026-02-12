@@ -24,8 +24,8 @@ data:
 
   # --- BANCO DE DADOS ---
   # TODO: corrigir user e password para os locais corretos ou montar essa url de forma dinamica 
-  JDBC_DATABASE_URL: "jdbc:postgresql://postgres-service:5432/comanda_livre?user=comanda_livre&password=password"
-
+  JDBC_DATABASE_URL: "jdbc:postgresql://postgres-cluster-rw:5432/comandalivre_db?user=comanda_livre&password=password"
+  KEYCLOAK_DATABASE_URL: "jdbc:postgresql://postgres-cluster-rw:5432/keycloak_db"
   # --- AUTH ---
   GOOGLE_JWK_SET_URI: "http://keycloak-service:8080/realms/comandalivre/protocol/openid-connect/certs"
 

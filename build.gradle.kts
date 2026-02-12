@@ -42,6 +42,11 @@ tasks.register("createCluster") {
             isIgnoreExitValue = true 
         }
         println("✅ Cluster pronto para receber os serviços.\n")
+        println("\n📦 --- Instalando CloudNativePG Operator ---")
+        exec {
+            commandLine("kubectl", "apply", "--server-side", "-f", "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.28/releases/cnpg-1.28.1.yaml")
+        }
+        println("✅ CNPG Operator instalado com sucesso.\n")
     }
 }
 
@@ -115,7 +120,6 @@ tasks.register("deployDev") {
         println("   - PrumoDigital: http://localhost:8083")
         println("   - Keycloak:     http://localhost:8090")
         println("   - MailHog:      http://localhost:8025")
-        println("   - GRAFANA:      http://localhost:3000")
         println("   - GRAFANA:      http://localhost:3000")
         println("--------------------------------------------------\n")
     }

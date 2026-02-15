@@ -14,9 +14,9 @@ class LogGeneratorTest {
     private var counter = 1
 
     // Executa a cada 1000 milissegundos (1 segundo)
-    @Scheduled(fixedRate = 1000)
-    fun generateHeartbeatLog() {
-        logger.info("⏳ [Heartbeat OTLP] Gerando log de teste automático #$counter - ${LocalDateTime.now()}")
-        counter++
-    }
+//    @Scheduled(fixedRate = 1000)
+//    fun generateHeartbeatLog() {
+//        logger.info("⏳ [Heartbeat OTLP] Gerando log de teste automático #$counter - ${LocalDateTime.now()}")
+//        counter++
+//    }
 }

@@ -11,7 +11,7 @@ spec:
   
   bootstrap:
     initdb:
-      database: comandalivre 
+      database: comandalivre_db
       owner: comanda_livre
       secret:
         name: cnpg-basic-auth
@@ -20,6 +20,8 @@ spec:
         - CREATE DATABASE company_db OWNER comanda_livre;
         - CREATE DATABASE prumodigital_db OWNER comanda_livre;
         - CREATE DATABASE user_db OWNER comanda_livre; 
+        - CREATE DATABASE legacy_db OWNER comanda_livre;
+
 
   resources:
     requests:

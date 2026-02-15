@@ -1,0 +1,16 @@
+firebase:
+  app-check:
+    enabled: false
+
+
+discord:
+  webhooks:
+    enabled: false
+
+aws:
+  s3:
+    access-key: admin
+    secret-key: password
+    bucket: comanda-livre
+    endpoint: http://localhost:9002
+    region: us-east-1

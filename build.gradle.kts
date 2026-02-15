@@ -93,8 +93,10 @@ tasks.register("ApplyDevOverlay"){
 
     dependsOn("createCluster")
 
-    exec {
-        commandLine("kubectl", "apply", "-k", "k8s/overlays/dev")
+    doLast {
+        exec {
+            commandLine("kubectl", "apply", "-k", "k8s/overlays/dev")
+        }
     }
 }
 

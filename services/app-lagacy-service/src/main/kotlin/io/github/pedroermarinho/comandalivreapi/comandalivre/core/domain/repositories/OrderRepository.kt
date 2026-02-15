@@ -1,0 +1,25 @@
+package io.github.pedroermarinho.comandalivreapi.comandalivre.core.domain.repositories
+
+import io.github.pedroermarinho.comandalivreapi.comandalivre.core.domain.dtos.order.OrderFilterDTO
+import io.github.pedroermarinho.comandalivreapi.comandalivre.core.domain.entities.OrderEntity
+import io.github.pedroermarinho.comandalivreapi.shared.core.domain.dtos.page.PageDTO
+import io.github.pedroermarinho.comandalivreapi.shared.core.domain.dtos.page.PageableDTO
+import io.github.pedroermarinho.comandalivreapi.shared.core.domain.valueobject.EntityId
+import java.util.*
+
+interface OrderRepository {
+    fun getById(orderId: Int): Result<OrderEntity>
+
+    fun getById(publicId: UUID): Result<OrderEntity>
+
+    fun getAll(
+        pageable: PageableDTO,
+        filter: OrderFilterDTO,
+    ): Result<PageDTO<OrderEntity>>
+
+    fun getAll(commandId: Int): Result<List<OrderEntity>>
+
+    fun delete(orderId: Int): Result<Unit>
+
+    fun save(entity: OrderEntity): Result<EntityId>
+}

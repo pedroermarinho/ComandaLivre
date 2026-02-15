@@ -1,0 +1,19 @@
+package io.github.pedroermarinho.comandalivreapi.comandalivre.core.domain.valueobject
+
+import io.github.pedroermarinho.comandalivreapi.shared.core.domain.exceptions.BusinessLogicException
+
+@JvmInline
+value class CommandPeople private constructor(
+    val value: Int,
+) {
+    companion object {
+        operator fun invoke(value: Int): CommandPeople {
+            if (value !in 1..1000) {
+                throw BusinessLogicException("Número de pessoas deve ser entre 1 e 1000")
+            }
+            return CommandPeople(value)
+        }
+
+        fun restore(persistedValue: Int): CommandPeople = CommandPeople(persistedValue)
+    }
+}

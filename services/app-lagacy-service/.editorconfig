@@ -1,0 +1,25 @@
+root = true
+
+[*]
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+indent_style = space
+
+[*.{kt,kts}]
+indent_size = 4
+max_line_length = 180
+ktlint_standard_no-wildcard-imports = disabled
+ij_kotlin_replace_call_with_indexed_access = false
+ij_kotlin_unused_declaration = false
+ij_kotlin_single_abstract_method = false
+
+[**/data/repositories/generated/**.{kt,kts}]
+ktlint_standard_property-naming = disabled
+max_line_length = off
+
+
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = off

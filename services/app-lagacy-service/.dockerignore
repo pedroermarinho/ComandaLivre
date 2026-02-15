@@ -1,0 +1,32 @@
+# Diretórios de build
+/build
+/.gradle
+/.idea
+.github/
+.gradle/
+out/
+bin/
+
+# Arquivos temporários e de sistema
+*.iml
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Testes e relatórios
+/test
+/reports
+/test-results
+/test-output
+
+# Arquivos de configuração locais
+.env
+*.local
+docker-compose*.yml
+*.bak

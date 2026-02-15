@@ -1,11 +1,21 @@
 spring:
     application:
         name: api-gateway-service
-
+    cloud:
+        gateway:
+            server:
+                webflux:
+                    routes:
+                        -   id: legacy-api-route
+                            uri: ${LEGACY_API_URL:http://localhost:8086}
+                            predicates:
+                                - Path=/api/**
 
 logging:
+#    level:
+#        org.springframework.cloud.gateway: TRACE
     pattern:
-        level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+        level: "%5p [${spring.application.name},%X{traceId:-},%X{spanId:-}]"
 
 
 management:

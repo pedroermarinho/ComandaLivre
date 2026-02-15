@@ -1,0 +1,122 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: ComandaLivre-API
+  profiles:
+    active: dev
+  modulith:
+    events:
+      jdbc-schema-initialization:
+        enabled: false
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    debug: true
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_AUTH}
+          starttls:
+            enable: ${MAIL_STARTTLS_ENABLE}
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+  jpa:
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: db/changelog/db-changelog.yaml
+    drop-first: false
+    enabled: true
+    default-schema: public
+  datasource:
+    url: ${LEGACY_DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${JWK_SET_URI}
+
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: ALWAYS
+
+app:
+  remember-me-key: ${REMEMBER_ME_KEY:private-key}
+  default-admin-emails: ${DEFAULT_ADMIN_EMAILS:}
+  environment: ${APP_ENV:dev}
+  cache:
+    # redis or caffeine
+    type: ${CACHE_TYPE:caffeine}
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    path: /docs
+    operationsSorter: method
+    tagsSorter: alpha
+    docExpansion: none
+    displayRequestDuration: true
+    disableSwaggerDefaultUrl: true
+
+#logging:
+#  level:
+#    liquibase: DEBUG
+#    org:
+#      jooq:
+#        tools:
+#          LoggerListener: DEBUG
+#      springframework:
+#        security: DEBUG
+#        web: DEBUG
+
+aws:
+  s3:
+    access-key: ${AWS_ACCESS_KEY:admin}
+    secret-key: ${AWS_SECRET_KEY:password}
+    bucket: ${AWS_BUCKET:comanda-livre}
+    endpoint: ${AWS_ENDPOINT:http://localhost:9002}
+    region: ${AWS_REGION:us-east-1}
+
+firebase:
+  app-check:
+    enabled: ${FIREBASE_APP_CHECK_ENABLED:true}
+    jwks-url: ${FIREBASE_APP_CHECK_JWKS_URL:https://firebaseappcheck.googleapis.com/v1/jwks}
+    project-number: ${FIREBASE_PROJECT_NUMBER:643362485598}
+    project-id: ${FIREBASE_PROJECT_ID:comandalivre-18660}
+
+discord:
+  webhooks:
+    enabled: ${DISCORD_WEBHOOKS_ENABLED:true}
+    user: ${DISCORD_WEBHOOKS_USER:""}
+    event: ${DISCORD_WEBHOOKS_EVENT:""}
+    error: ${DISCORD_WEBHOOKS_ERROR:""}
+
+
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework: DEBUG
+#    org.springframework.web: TRACE
+#    org.springframework.security: TRACE
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql: TRACE

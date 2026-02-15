@@ -1,0 +1,10 @@
+                                                                                         
+  ⚠️  ATENÇÃO: MODO DE TESTE ATIVO ⚠️
+  
+  Este é o profile 'jmeter' - APENAS PARA TESTES!
+  
+  - Firebase App Check: DESABILITADO
+  - Endpoint de teste: /api/v1/test/auth/token
+  
+  NUNCA USE ESTE PROFILE EM PRODUÇÃO!
+  

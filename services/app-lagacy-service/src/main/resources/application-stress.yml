@@ -1,0 +1,35 @@
+# Profile de Teste para Stress
+
+# Desabilitar Firebase App Check
+firebase:
+    app-check:
+        enabled: false
+
+spring:
+    banner:
+        location: classpath:banner-stress.txt
+    mail:
+        host: localhost
+        port: 1025
+        username: ""
+        password: ""
+        properties:
+            smtp:
+                auth: false
+                starttls:
+                    enable: false
+    datasource:
+        url: jdbc:postgresql://localhost:5432/comanda_livre?user=comanda_livre&password=password
+
+
+aws:
+  s3:
+    access-key: admin
+    secret-key: password
+    bucket: comanda-livre
+    endpoint: http://localhost:9002
+    region: us-east-1
+
+discord:
+  webhooks:
+    enabled: false

@@ -8,26 +8,29 @@ name: comanda-livre
 nodes:
 - role: control-plane
   extraPortMappings:
-  # COMANDALIVRE-SERVICE
-  - containerPort: 30080 
-    hostPort: 8080
-    listenAddress: "127.0.0.1"
-    protocol: TCP
-  # COMPANY-SERVICE
+  # API-GATEWAY-SERVICE
   - containerPort: 30081
     hostPort: 8081
     protocol: TCP
-  # USER-SERVICE
-  - containerPort: 30082
+  # COMANDALIVRE-SERVICE
+  - containerPort: 30082 
     hostPort: 8082
     protocol: TCP
-  # PRUMODIGITAL-SERVICE
+  # COMPANY-SERVICE
   - containerPort: 30083
     hostPort: 8083
     protocol: TCP
-  # API-GATEWAY-SERVICE
+  # USER-SERVICE
   - containerPort: 30084
     hostPort: 8084
+    protocol: TCP
+  # PRUMODIGITAL-SERVICE
+  - containerPort: 30085
+    hostPort: 8085
+    protocol: TCP
+  # APP-LAGACY-SERVICE
+  - containerPort: 30086
+    hostPort: 8086
     protocol: TCP
   # KEYCLOAK
   - containerPort: 30090

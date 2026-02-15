@@ -20,6 +20,7 @@ resources:
   - apps/prumodigital-service.yaml
   - apps/user-service.yaml
   - apps/api-gateway-service.yaml
+  - apps/app-lagacy-service.yaml
 
 configMapGenerator:
   - name: grafana-datasources

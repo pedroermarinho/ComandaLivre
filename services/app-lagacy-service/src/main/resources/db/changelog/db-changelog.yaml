@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - includeAll:
+      path: db/changelog/migrations/schema
+  - includeAll:
+      path: db/changelog/migrations/public
+  - includeAll:
+      path: db/changelog/migrations/company
+  - includeAll:
+      path: db/changelog/migrations/comandalivre
+  - includeAll:
+      path: db/changelog/migrations/prumodigital
+  - includeAll:
+      path: db/changelog/datasets/public
+  - includeAll:
+      path: db/changelog/datasets/company
+  - includeAll:
+      path: db/changelog/datasets/comandalivre
+  - includeAll:
+      path: db/changelog/datasets/prumodigital

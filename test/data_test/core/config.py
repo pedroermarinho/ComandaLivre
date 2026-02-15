@@ -24,7 +24,7 @@ HEALTH_CHECK_ENDPOINT = f"{API_BASE_URL}/company/companies"
 
 # --- Keycloak Configuration ---
 # Details from devops/keycloak/realm-export.json
-KEYCLOAK_BASE_URL = os.getenv("KEYCLOAK_BASE_URL", "http://localhost:8082")
+KEYCLOAK_BASE_URL = os.getenv("KEYCLOAK_BASE_URL", "http://localhost:8090")
 KEYCLOAK_REALM = "comandalivre"
 KEYCLOAK_TOKEN_ENDPOINT = f"{KEYCLOAK_BASE_URL}/realms/{KEYCLOAK_REALM}/protocol/openid-connect/token"
 

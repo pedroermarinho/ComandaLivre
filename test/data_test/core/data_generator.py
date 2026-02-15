@@ -39,6 +39,11 @@ class PtBrPhoneProvider(BaseProvider):
 
 # --- DataGenerator Class ---
 
+def generate_unique_email(name: str) -> str:
+    """Generates a unique email."""
+    return f"{name.replace(' ', '').replace('.','')}.{str(uuid.uuid4()).replace("-", "")[:8].lower()}@comandalivre-test.com"
+
+
 class DataGenerator:
     """
     Handles the generation of all necessary synthetic data for the tests.
@@ -70,19 +75,10 @@ class DataGenerator:
         except AttributeError:
             return self.faker.word()
 
-    def _generate_unique_email(self, name: str) -> str:
-        """Generates a unique email."""
-        try:
-            base_email = name.split(' ')[0].lower().replace('.', '')
-            return self.faker.unique.email(domain=f"comandalivre-test.com")
-        except Exception:
-            logging.warning("Faker unique email provider exhausted. Appending UUID.")
-            return f"{name.replace(' ', '.')}.{uuid.uuid4()}@example.com"
-
     def generate_user_data(self) -> Dict[str, Any]:
         """Generates data for a new user registration."""
         name = self.faker.name()
-        email = self._generate_unique_email(name)
+        email = generate_unique_email(name)
         password = self.faker.password(length=12, special_chars=True, digits=True, upper_case=True, lower_case=True)
         return {
             "name": name,
@@ -94,10 +90,10 @@ class DataGenerator:
 
     def generate_company_data(self) -> Dict[str, Any]:
         """Generates data for a new company."""
-        name = self._sanitize_company_name(self.faker.unique.company())
+        name = self._sanitize_company_name(self.faker.unique.company() + str(uuid.uuid4()))
         return {
             "name": name,
-            "email": self.faker.unique.company_email(),
+            "email": generate_unique_email(name),
             "phone": self.faker.pt_br_cellphone(),
             "cnpj": self.faker.cnpj(), # Use faker's cnpj generator for pt_BR locale
             "description": self.faker.catch_phrase(),

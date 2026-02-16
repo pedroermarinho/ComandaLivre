@@ -1,11 +1,15 @@
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.buildpack.platform.build.PullPolicy
+import nu.studer.gradle.jooq.JooqEdition
 
 plugins {
-	kotlin("jvm") version "2.3.10"
-	kotlin("plugin.spring") version "2.3.10"
-	id("org.springframework.boot") version "3.5.10"
-	id("io.spring.dependency-management") version "1.1.7"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.jooq)
+    alias(libs.plugins.liquibase)
+    alias(libs.plugins.spotless)
 }
 
 group = "io.github.pedroermarinho"
@@ -31,30 +35,101 @@ repositories {
 extra["springModulithVersion"] = "1.4.7"
 
 dependencies {
-	implementation(project(":libs:shared-common"))
+    implementation(project(":libs:shared-common"))
 
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-cache")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-	implementation("org.springframework.boot:spring-boot-starter-security")
-	implementation("org.springframework.boot:spring-boot-starter-validation")
-	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.liquibase:liquibase-core")
-	implementation("org.springframework.modulith:spring-modulith-starter-core")
-	runtimeOnly("org.postgresql:postgresql")
-	runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
-	runtimeOnly("org.springframework.modulith:spring-modulith-observability")
-	annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.boot:spring-boot-testcontainers")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-	testImplementation("org.springframework.modulith:spring-modulith-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation("org.testcontainers:junit-jupiter")
-	testImplementation("org.testcontainers:postgresql")
-	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    // --- Core Spring ---
+    implementation(libs.spring.boot.starter.cache)
+    implementation(libs.spring.boot.starter.mail)
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.websocket)
+    implementation(libs.spring.data.commons)
+
+    // --- Spring Modulith ---
+    implementation(libs.spring.modulith.starter.core)
+    implementation(libs.spring.modulith.actuator)
+    implementation(libs.spring.modulith.docs)
+    implementation(libs.spring.modulith.events.api)
+    implementation(libs.spring.modulith.starter.jdbc)
+    testImplementation(libs.spring.modulith.starter.test)
+
+    // --- Spring Extras ---
+    implementation(libs.spring.boot.starter.actuator)
+    // developmentOnly(libs.spring.boot.devtools) // Descomentar se necessário
+    annotationProcessor(libs.spring.boot.configuration.processor)
+    implementation(libs.spring.dotenv)
+    implementation(libs.spring.boot.starter.aop)
+
+    // --- Kotlin + Coroutines ---
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.reactor)
+    implementation(libs.nimbus.jose.jwt)
+
+    // --- Database: PostgreSQL, JOOQ, Liquibase ---
+    implementation(libs.uuid.creator)
+    implementation(libs.postgresql)
+    implementation(libs.jooq)
+    implementation(libs.spring.boot.starter.jooq)
+    implementation(libs.liquibase.core)
+
+    // Dependências de Geração do jOOQ (Runtime do plugin)
+    jooqGenerator(libs.jooq.meta)
+    jooqGenerator(libs.jooq.codegen)
+    jooqGenerator(libs.jooq.meta.extensions)
+    jooqGenerator(libs.postgresql)
+
+    // Dependências de Runtime do Liquibase
+    liquibaseRuntime(libs.liquibase.core)
+    liquibaseRuntime(libs.snakeyaml)
+    liquibaseRuntime(libs.postgresql)
+    liquibaseRuntime(libs.picocli)
+
+    // --- Cache ---
+    implementation(libs.caffeine)
+    implementation(libs.spring.boot.starter.data.redis)
+
+    // --- Firebase ---
+    implementation(libs.firebase.admin)
+
+    // --- AWS ---
+    implementation(libs.aws.s3)
+
+    // --- OpenAPI ---
+    implementation(libs.springdoc.openapi.ui)
+    implementation(libs.jackson.module.kotlin)
+
+    // --- Logging ---
+    implementation(libs.logback.classic)
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
+
+    // --- Test ---
+    testImplementation(libs.spring.boot.starter.test) {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    }
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.spring.boot.testcontainers)
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.spring.security.test)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.testcontainers.postgresql)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.assertj.core)
+
+    testImplementation(libs.javafaker) {
+        exclude(group = "org.yaml", module = "snakeyaml")
+    }
+    // Snakeyaml explícito para testes, garantindo alinhamento de versão
+    testImplementation(libs.snakeyaml)
+
+    testImplementation(libs.rest.assured)
+    testImplementation(libs.testcontainers.minio)
+    testImplementation(libs.testcontainers.redis)
+    testImplementation(libs.testcontainers.toxiproxy)
+    testImplementation(libs.mockk)
 }
 
 dependencyManagement {
@@ -67,6 +142,73 @@ kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
 	}
+}
+
+
+liquibase {
+    activities.register("compose") {
+        this.arguments =
+            mapOf(
+                "searchPath" to "${project.projectDir}/lib/db/src/main",
+                "changelogFile" to "resources/db/changelog/db-changelog.yaml",
+            )
+    }
+    activities.register("main") {
+        this.arguments =
+            mapOf(
+                "searchPath" to "${project.projectDir}/src/main/resources",
+                "changelogFile" to "db/changelog/db-changelog.yaml",
+                "url" to project.findProperty("postgres.url") as String?,
+                "username" to project.findProperty("postgres.username") as String?,
+                "password" to project.findProperty("postgres.password") as String?,
+                "driver" to "org.postgresql.Driver",
+            )
+    }
+    runList = "main"
+}
+
+
+jooq {
+    version.set(libs.versions.jooq.get())
+    edition.set(JooqEdition.OSS)
+    configurations {
+        create("company") {
+            generateSchemaSourceOnCompilation.set(false)
+            jooqConfiguration.apply {
+                logging = org.jooq.meta.jaxb.Logging.DEBUG
+                generator.apply {
+                    name = "org.jooq.codegen.KotlinGenerator"
+                    generate.apply {
+                        isDeprecated = false
+                        isRecords = true
+                        isJavaTimeTypes = true
+                        isPojos = false
+                        isDaos = false
+                        isInterfaces = false
+                        isRelations = false
+                        isComments = true
+                        isValidationAnnotations = false
+                        isKotlinNotNullRecordAttributes = true
+                    }
+                    database.apply {
+                        name = "org.jooq.meta.postgres.PostgresDatabase"
+                        inputSchema = "public"
+                        excludes = "databasechangelog|databasechangeloglock"
+                    }
+                    target.apply {
+                        packageName = "company"
+                        directory = "src/main/kotlin/io/github/pedroermarinho/company/data/repositories/generated"
+                    }
+                }
+                jdbc.apply {
+                    driver = "org.postgresql.Driver"
+                    url = project.findProperty("postgres.url") as String?
+                    user = project.findProperty("postgres.username") as String?
+                    password = project.findProperty("postgres.password") as String?
+                }
+            }
+        }
+    }
 }
 
 tasks.withType<Test> {

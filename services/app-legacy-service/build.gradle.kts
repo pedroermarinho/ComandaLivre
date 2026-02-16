@@ -3,41 +3,17 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.buildpack.platform.build.PullPolicy
 
 plugins {
-    kotlin("jvm") version "2.3.10"
-    kotlin("plugin.spring") version "2.3.10"
-    id("org.springframework.boot") version "3.5.10"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("nu.studer.jooq") version "9.0"
-    id("org.liquibase.gradle") version "2.2.2"
-    id("com.diffplug.spotless") version "7.0.4"
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring)
+    alias(libs.plugins.spring.boot)
+    alias(libs.plugins.spring.dependency.management)
+    alias(libs.plugins.jooq)
+    alias(libs.plugins.liquibase)
+    alias(libs.plugins.spotless)
 }
 
 group = "io.github.pedroermarinho"
 version = "0.0.1-SNAPSHOT"
-
-val versions =
-    mapOf(
-        "kotlinCoroutines" to "1.10.2",
-        "springdoc" to "2.8.5",
-        "caffeine" to "3.2.0",
-        "firebase" to "9.4.3",
-        "jooq" to "3.19.15",
-        "picocli" to "4.7.6",
-        "snakeyaml" to "2.4",
-        "slf4j" to "2.0.17",
-        "logback" to "1.5.27",
-        "kotlinLogging" to "7.0.14",
-        "awsSdk" to "2.31.0",
-        "springDotenv" to "4.0.0",
-        "uuidCreator" to "6.1.1",
-        "springModulith" to "1.4.0",
-        "assertjCore" to "3.25.3",
-        "javafaker" to "1.0.2",
-        "mockitoKotlin" to "5.3.1",
-        "adminServer" to "3.5.0",
-        "restAssured" to "5.5.6",
-        "mockk" to "1.14.6",
-    )
 
 java {
     toolchain {
@@ -52,95 +28,99 @@ repositories {
 dependencies {
     implementation(project(":libs:shared-common"))
 
-    // Core Spring
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("org.springframework.data:spring-data-commons")
+    // --- Core Spring ---
+    implementation(libs.spring.boot.starter.cache)
+    implementation(libs.spring.boot.starter.mail)
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.spring.boot.starter.validation)
+    implementation(libs.spring.boot.starter.web)
+    implementation(libs.spring.boot.starter.websocket)
+    implementation(libs.spring.data.commons)
 
-    // Spring Modulith
-    implementation("org.springframework.modulith:spring-modulith-starter-core:${versions["springModulith"]}")
-    testImplementation("org.springframework.modulith:spring-modulith-starter-test:${versions["springModulith"]}")
-    implementation("org.springframework.modulith:spring-modulith-actuator:${versions["springModulith"]}")
-    implementation("org.springframework.modulith:spring-modulith-docs:${versions["springModulith"]}")
-    implementation("org.springframework.modulith:spring-modulith-events-api:${versions["springModulith"]}")
-    implementation("org.springframework.modulith:spring-modulith-starter-jdbc:${versions["springModulith"]}")
+    // --- Spring Modulith ---
+    implementation(libs.spring.modulith.starter.core)
+    implementation(libs.spring.modulith.actuator)
+    implementation(libs.spring.modulith.docs)
+    implementation(libs.spring.modulith.events.api)
+    implementation(libs.spring.modulith.starter.jdbc)
+    testImplementation(libs.spring.modulith.starter.test)
 
-    // Spring Extras
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-//    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("me.paulschwarz:spring-dotenv:${versions["springDotenv"]}")
-    implementation("org.springframework.boot:spring-boot-starter-aop")
+    // --- Spring Extras ---
+    implementation(libs.spring.boot.starter.actuator)
+    // developmentOnly(libs.spring.boot.devtools) // Descomentar se necessário
+    annotationProcessor(libs.spring.boot.configuration.processor)
+    implementation(libs.spring.dotenv)
+    implementation(libs.spring.boot.starter.aop)
 
-    // Kotlin + Coroutines
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions["kotlinCoroutines"]}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${versions["kotlinCoroutines"]}")
-    implementation("com.nimbusds:nimbus-jose-jwt:10.5")
+    // --- Kotlin + Coroutines ---
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.reactor)
+    implementation(libs.nimbus.jose.jwt)
 
-    // Database: PostgreSQL, JOOQ, Liquibase
-    implementation("com.github.f4b6a3:uuid-creator:${versions["uuidCreator"]}")
-    implementation("org.postgresql:postgresql")
-    implementation("org.jooq:jooq:${versions["jooq"]}")
-    implementation("org.springframework.boot:spring-boot-starter-jooq")
-    implementation("org.liquibase:liquibase-core")
+    // --- Database: PostgreSQL, JOOQ, Liquibase ---
+    implementation(libs.uuid.creator)
+    implementation(libs.postgresql)
+    implementation(libs.jooq)
+    implementation(libs.spring.boot.starter.jooq)
+    implementation(libs.liquibase.core)
 
-    jooqGenerator("org.jooq:jooq-meta:${versions["jooq"]}")
-    jooqGenerator("org.jooq:jooq-codegen:${versions["jooq"]}")
-    jooqGenerator("org.jooq:jooq-meta-extensions:${versions["jooq"]}")
-    jooqGenerator("org.postgresql:postgresql")
+    // Dependências de Geração do jOOQ (Runtime do plugin)
+    jooqGenerator(libs.jooq.meta)
+    jooqGenerator(libs.jooq.codegen)
+    jooqGenerator(libs.jooq.meta.extensions)
+    jooqGenerator(libs.postgresql)
 
-    liquibaseRuntime("org.liquibase:liquibase-core")
-    liquibaseRuntime("org.yaml:snakeyaml:${versions["snakeyaml"]}")
-    liquibaseRuntime("org.postgresql:postgresql")
-    liquibaseRuntime("info.picocli:picocli:${versions["picocli"]}")
+    // Dependências de Runtime do Liquibase
+    liquibaseRuntime(libs.liquibase.core)
+    liquibaseRuntime(libs.snakeyaml)
+    liquibaseRuntime(libs.postgresql)
+    liquibaseRuntime(libs.picocli)
 
-    // Cache
-    implementation("com.github.ben-manes.caffeine:caffeine:${versions["caffeine"]}")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    // --- Cache ---
+    implementation(libs.caffeine)
+    implementation(libs.spring.boot.starter.data.redis)
 
-    // Firebase
-    implementation("com.google.firebase:firebase-admin:${versions["firebase"]}")
+    // --- Firebase ---
+    implementation(libs.firebase.admin)
 
-    // AWS
-    implementation("software.amazon.awssdk:s3:${versions["awsSdk"]}")
+    // --- AWS ---
+    implementation(libs.aws.s3)
 
-    // OpenAPI
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["springdoc"]}")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    // --- OpenAPI ---
+    implementation(libs.springdoc.openapi.ui)
+    implementation(libs.jackson.module.kotlin)
 
-    // Logging
-    implementation("ch.qos.logback:logback-classic:${versions["logback"]}")
-    implementation("io.github.oshai:kotlin-logging-jvm:${versions["kotlinLogging"]}")
-    implementation("org.slf4j:slf4j-api:${versions["slf4j"]}")
+    // --- Logging ---
+    implementation(libs.logback.classic)
+    implementation(libs.kotlin.logging)
+    implementation(libs.slf4j.api)
 
-    // Test
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    // --- Test ---
+    testImplementation(libs.spring.boot.starter.test) {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("org.mockito.kotlin:mockito-kotlin:${versions["mockitoKotlin"]}")
-    testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.testcontainers:junit-jupiter")
-    testImplementation("org.testcontainers:postgresql")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.assertj:assertj-core:${versions["assertjCore"]}")
-    testImplementation("com.github.javafaker:javafaker:${versions["javafaker"]}") {
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.spring.boot.testcontainers)
+    testImplementation(libs.kotlin.test.junit5)
+    testImplementation(libs.spring.security.test)
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.testcontainers.postgresql)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.assertj.core)
+
+    testImplementation(libs.javafaker) {
         exclude(group = "org.yaml", module = "snakeyaml")
     }
-    testImplementation("org.yaml:snakeyaml:${versions["snakeyaml"]}")
+    // Snakeyaml explícito para testes, garantindo alinhamento de versão
+    testImplementation(libs.snakeyaml)
 
-    testImplementation("io.rest-assured:rest-assured:${versions["restAssured"]}")
-    testImplementation("org.testcontainers:minio:1.19.5")
-    testImplementation("com.redis.testcontainers:testcontainers-redis:1.6.4")
-    testImplementation("org.testcontainers:toxiproxy:1.21.3")
-    testImplementation("io.mockk:mockk:${versions["mockk"]}")
+    testImplementation(libs.rest.assured)
+    testImplementation(libs.testcontainers.minio)
+    testImplementation(libs.testcontainers.redis)
+    testImplementation(libs.testcontainers.toxiproxy)
+    testImplementation(libs.mockk)
 }
 
 kotlin {
@@ -159,14 +139,14 @@ liquibase {
     activities.register("compose") {
         this.arguments =
             mapOf(
-                "classpath" to "${rootProject.rootDir}/lib/db/src/main",
+                "searchPath" to "${project.projectDir}/lib/db/src/main",
                 "changelogFile" to "resources/db/changelog/db-changelog.yaml",
             )
     }
     activities.register("main") {
         this.arguments =
             mapOf(
-                "classpath" to "${rootProject.rootDir}/src/main/resources",
+                "searchPath" to "${project.projectDir}/src/main/resources",
                 "changelogFile" to "db/changelog/db-changelog.yaml",
                 "url" to project.findProperty("postgres.url") as String?,
                 "username" to project.findProperty("postgres.username") as String?,
@@ -178,7 +158,7 @@ liquibase {
 }
 
 jooq {
-    version.set(versions["jooq"])
+    version.set(libs.versions.jooq.get())
     edition.set(JooqEdition.OSS)
     configurations {
         create("shared") {

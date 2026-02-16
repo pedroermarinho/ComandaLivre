@@ -1,0 +1,148 @@
+[versions]
+# --- Core Language & Frameworks ---
+kotlin = "2.3.10"
+springBoot = "3.5.10"
+springDependencyManagement = "1.1.7"
+springModulith = "1.4.0"
+springDotenv = "4.0.0"
+springDoc = "2.8.5"
+kotlinCoroutines = "1.10.2"
+
+# --- Database & Persistence ---
+jooq = "3.19.15"
+liquibase = "2.2.2" # Plugin version
+liquibaseCore = "4.24.0" # Fallback/Default if not managed by plugin, but usually matched.
+# Note: User didn't specify liquibase-core version, assumes managed by Spring Boot or Plugin.
+uuidCreator = "6.1.1"
+caffeine = "3.2.0"
+redisTestContainer = "1.6.4"
+
+# --- Cloud & External Services ---
+awsSdk = "2.31.0"
+firebase = "9.4.3"
+grpcNetty = "1.79.0"
+
+# --- Tools & Utilities ---
+picocli = "4.7.6"
+snakeyaml = "2.4"
+nimbusJoseJwt = "10.5"
+jackson = "2.16.1" # Managed by Spring Boot usually, but explicit definition requested if needed
+
+# --- Observability & Logging ---
+slf4j = "2.0.17"
+logback = "1.5.27"
+kotlinLogging = "7.0.14"
+micrometerTracing = "1.2.0" # Managed by Boot
+opentelemetry = "1.33.0" # Managed by Boot
+
+# --- Testing ---
+assertjCore = "3.25.3"
+javafaker = "1.0.2"
+mockitoKotlin = "5.3.1"
+mockk = "1.14.6"
+restAssured = "5.5.6"
+minio = "1.19.5"
+toxiproxy = "1.21.3"
+
+# --- Plugins ---
+jooqPlugin = "9.0"
+spotless = "7.0.4"
+adminServer = "3.5.0"
+
+[libraries]
+# --- Spring Boot Core ---
+spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
+spring-boot-starter-cache = { group = "org.springframework.boot", name = "spring-boot-starter-cache" }
+spring-boot-starter-mail = { group = "org.springframework.boot", name = "spring-boot-starter-mail" }
+spring-boot-starter-oauth2-resource-server = { group = "org.springframework.boot", name = "spring-boot-starter-oauth2-resource-server" }
+spring-boot-starter-security = { group = "org.springframework.boot", name = "spring-boot-starter-security" }
+spring-boot-starter-validation = { group = "org.springframework.boot", name = "spring-boot-starter-validation" }
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
+spring-boot-starter-websocket = { group = "org.springframework.boot", name = "spring-boot-starter-websocket" }
+spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis" }
+spring-boot-starter-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop" }
+spring-boot-starter-jooq = { group = "org.springframework.boot", name = "spring-boot-starter-jooq" }
+spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" }
+spring-boot-devtools = { group = "org.springframework.boot", name = "spring-boot-devtools" }
+spring-data-commons = { group = "org.springframework.data", name = "spring-data-commons" }
+
+# --- Reactive & Gateway ---
+spring-boot-starter-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
+spring-boot-starter-graphql = { group = "org.springframework.boot", name = "spring-boot-starter-graphql" }
+spring-cloud-starter-gateway-server-webflux = { group = "org.springframework.cloud", name = "spring-cloud-starter-gateway-server-webflux" }
+
+# --- Spring Modulith ---
+spring-modulith-starter-core = { group = "org.springframework.modulith", name = "spring-modulith-starter-core", version.ref = "springModulith" }
+spring-modulith-starter-test = { group = "org.springframework.modulith", name = "spring-modulith-starter-test", version.ref = "springModulith" }
+spring-modulith-actuator = { group = "org.springframework.modulith", name = "spring-modulith-actuator", version.ref = "springModulith" }
+spring-modulith-docs = { group = "org.springframework.modulith", name = "spring-modulith-docs", version.ref = "springModulith" }
+spring-modulith-events-api = { group = "org.springframework.modulith", name = "spring-modulith-events-api", version.ref = "springModulith" }
+spring-modulith-starter-jdbc = { group = "org.springframework.modulith", name = "spring-modulith-starter-jdbc", version.ref = "springModulith" }
+
+# --- Kotlin & Coroutines ---
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin" }
+kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinCoroutines" }
+kotlinx-coroutines-reactor = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-reactor", version.ref = "kotlinCoroutines" }
+reactor-kotlin-extensions = { group = "io.projectreactor.kotlin", name = "reactor-kotlin-extensions" }
+
+# --- Database & Persistence ---
+postgresql = { group = "org.postgresql", name = "postgresql" }
+jooq = { group = "org.jooq", name = "jooq", version.ref = "jooq" }
+jooq-meta = { group = "org.jooq", name = "jooq-meta", version.ref = "jooq" }
+jooq-codegen = { group = "org.jooq", name = "jooq-codegen", version.ref = "jooq" }
+jooq-meta-extensions = { group = "org.jooq", name = "jooq-meta-extensions", version.ref = "jooq" }
+liquibase-core = { group = "org.liquibase", name = "liquibase-core" }
+uuid-creator = { group = "com.github.f4b6a3", name = "uuid-creator", version.ref = "uuidCreator" }
+caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
+
+# --- Utilities & 3rd Party ---
+spring-dotenv = { group = "me.paulschwarz", name = "spring-dotenv", version.ref = "springDotenv" }
+nimbus-jose-jwt = { group = "com.nimbusds", name = "nimbus-jose-jwt", version.ref = "nimbusJoseJwt" }
+firebase-admin = { group = "com.google.firebase", name = "firebase-admin", version.ref = "firebase" }
+aws-s3 = { group = "software.amazon.awssdk", name = "s3", version.ref = "awsSdk" }
+picocli = { group = "info.picocli", name = "picocli", version.ref = "picocli" }
+snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
+jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
+grpc-netty = { group = "io.grpc", name = "grpc-netty", version.ref = "grpcNetty" }
+
+# --- OpenAPI ---
+springdoc-openapi-ui = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version.ref = "springDoc" }
+
+# --- Observability & Logging ---
+logback-classic = { group = "ch.qos.logback", name = "logback-classic", version.ref = "logback" }
+kotlin-logging = { group = "io.github.oshai", name = "kotlin-logging-jvm", version.ref = "kotlinLogging" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
+micrometer-registry-otlp = { group = "io.micrometer", name = "micrometer-registry-otlp" }
+micrometer-tracing-bridge-otel = { group = "io.micrometer", name = "micrometer-tracing-bridge-otel" }
+opentelemetry-exporter-otlp = { group = "io.opentelemetry", name = "opentelemetry-exporter-otlp" }
+
+# --- Testing ---
+spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test" }
+spring-boot-testcontainers = { group = "org.springframework.boot", name = "spring-boot-testcontainers" }
+spring-security-test = { group = "org.springframework.security", name = "spring-security-test" }
+spring-graphql-test = { group = "org.springframework.graphql", name = "spring-graphql-test" }
+reactor-test = { group = "io.projectreactor", name = "reactor-test" }
+kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
+junit-jupiter = { group = "org.testcontainers", name = "junit-jupiter" }
+testcontainers-postgresql = { group = "org.testcontainers", name = "postgresql" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
+assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertjCore" }
+javafaker = { group = "com.github.javafaker", name = "javafaker", version.ref = "javafaker" }
+rest-assured = { group = "io.rest-assured", name = "rest-assured", version.ref = "restAssured" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+
+# --- TestContainers Extras ---
+testcontainers-minio = { group = "org.testcontainers", name = "minio", version.ref = "minio" }
+testcontainers-redis = { group = "com.redis.testcontainers", name = "testcontainers-redis", version.ref = "redisTestContainer" }
+testcontainers-toxiproxy = { group = "org.testcontainers", name = "toxiproxy", version.ref = "toxiproxy" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+jooq = { id = "nu.studer.jooq", version.ref = "jooqPlugin" }
+liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

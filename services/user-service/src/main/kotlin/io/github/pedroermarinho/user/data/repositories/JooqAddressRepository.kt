@@ -9,7 +9,7 @@ import io.github.pedroermarinho.user.infra.mappers.AddressPersistenceMapper
 import io.github.pedroermarinho.user.infra.mappers.toEntity
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import shared.tables.references.ADDRESSES
+import user.tables.references.ADDRESSES
 
 @Repository
 class JooqAddressRepository(

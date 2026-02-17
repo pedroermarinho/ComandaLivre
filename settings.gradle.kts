@@ -16,6 +16,3 @@ include(":services:user-service")
 include(":services:prumodigital-service")
 include(":services:api-gateway-service")
 include(":services:app-legacy-service")
-
-
-project(":services:app-legacy-service").projectDir = file("services/app-legacy-service")

@@ -1,21 +1,25 @@
 [versions]
 # --- Core Language & Frameworks ---
+
+jvm = "25"
+
 kotlin = "2.3.10"
-springBoot = "3.5.10"
+springBoot = "4.0.2"
+springBootV4 = "4.0.0-M2"
 springDependencyManagement = "1.1.7"
-springModulith = "1.4.0"
+springModulith = "2.0.2"
 springDotenv = "4.0.0"
 springDoc = "2.8.5"
 kotlinCoroutines = "1.10.2"
 
 # --- Database & Persistence ---
-jooq = "3.19.15"
-liquibase = "2.2.2" # Plugin version
-liquibaseCore = "4.24.0" # Fallback/Default if not managed by plugin, but usually matched.
-# Note: User didn't specify liquibase-core version, assumes managed by Spring Boot or Plugin.
+jooq = "3.19.29"
+liquibase = "2.2.2"
+liquibaseCore = "4.24.0"
 uuidCreator = "6.1.1"
 caffeine = "3.2.0"
 redisTestContainer = "1.6.4"
+
 
 # --- Cloud & External Services ---
 awsSdk = "2.31.0"
@@ -26,14 +30,15 @@ grpcNetty = "1.79.0"
 picocli = "4.7.6"
 snakeyaml = "2.4"
 nimbusJoseJwt = "10.5"
-jackson = "2.16.1" # Managed by Spring Boot usually, but explicit definition requested if needed
+jackson = "2.16.1"
+testContainer = "1.21.4"
 
 # --- Observability & Logging ---
 slf4j = "2.0.17"
 logback = "1.5.27"
 kotlinLogging = "7.0.14"
-micrometerTracing = "1.2.0" # Managed by Boot
-opentelemetry = "1.33.0" # Managed by Boot
+micrometerTracing = "1.2.0"
+opentelemetry = "1.33.0"
 
 # --- Testing ---
 assertjCore = "3.25.3"
@@ -45,9 +50,18 @@ minio = "1.19.5"
 toxiproxy = "1.21.3"
 
 # --- Plugins ---
-jooqPlugin = "9.0"
+jooqPlugin = "10.2"
 spotless = "7.0.4"
 adminServer = "3.5.0"
+
+# --- GRPC ---
+protobufPlugin = "0.9.6"
+protoc = "4.33.5"
+grpcKotlinStub = "1.4.1"
+grpcProtobuf = "1.61.1"
+protobufKotlin = "3.25.3"
+protocGenGrpcJava = "1.79.0"
+protocGenGrpcKotlin = "1.5.0"
 
 [libraries]
 # --- Spring Boot Core ---
@@ -60,11 +74,13 @@ spring-boot-starter-validation = { group = "org.springframework.boot", name = "s
 spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web" }
 spring-boot-starter-websocket = { group = "org.springframework.boot", name = "spring-boot-starter-websocket" }
 spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "spring-boot-starter-data-redis" }
-spring-boot-starter-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop" }
+spring-boot-starter-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop", version.ref = "springBootV4" }
 spring-boot-starter-jooq = { group = "org.springframework.boot", name = "spring-boot-starter-jooq" }
 spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" }
 spring-boot-devtools = { group = "org.springframework.boot", name = "spring-boot-devtools" }
 spring-data-commons = { group = "org.springframework.data", name = "spring-data-commons" }
+spring-boot-starter = { group = "org.springframework.boot", name = "spring-boot-starter" }
+spring-web = { group = "org.springframework", name = "spring-web" }
 
 # --- Reactive & Gateway ---
 spring-boot-starter-webflux = { group = "org.springframework.boot", name = "spring-boot-starter-webflux" }
@@ -124,8 +140,8 @@ spring-graphql-test = { group = "org.springframework.graphql", name = "spring-gr
 reactor-test = { group = "io.projectreactor", name = "reactor-test" }
 kotlin-test-junit5 = { group = "org.jetbrains.kotlin", name = "kotlin-test-junit5" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test" }
-junit-jupiter = { group = "org.testcontainers", name = "junit-jupiter" }
-testcontainers-postgresql = { group = "org.testcontainers", name = "postgresql" }
+junit-jupiter = { group = "org.testcontainers", name = "junit-jupiter", version.ref = "testContainer" }
+testcontainers-postgresql = { group = "org.testcontainers", name = "postgresql", version.ref = "testContainer"}
 junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 assertj-core = { group = "org.assertj", name = "assertj-core", version.ref = "assertjCore" }
@@ -138,6 +154,15 @@ testcontainers-minio = { group = "org.testcontainers", name = "minio", version.r
 testcontainers-redis = { group = "com.redis.testcontainers", name = "testcontainers-redis", version.ref = "redisTestContainer" }
 testcontainers-toxiproxy = { group = "org.testcontainers", name = "toxiproxy", version.ref = "toxiproxy" }
 
+
+# ---  gRPC ---
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpcKotlinStub" }
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpcProtobuf" }
+protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobufKotlin" }
+protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protoc" }
+protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "protocGenGrpcJava" }
+protoc-gen-grpc-kotlin = { group = "io.grpc", name = "protoc-gen-grpc-kotlin", version.ref = "protocGenGrpcKotlin" }
+
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
@@ -146,3 +171,4 @@ spring-dependency-management = { id = "io.spring.dependency-management", version
 jooq = { id = "nu.studer.jooq", version.ref = "jooqPlugin" }
 liquibase = { id = "org.liquibase.gradle", version.ref = "liquibase" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }

@@ -4,6 +4,7 @@
 package user.keys
 
 
+import org.jooq.ForeignKey
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
 import org.jooq.impl.Internal
@@ -71,3 +72,16 @@ val USERS_EMAIL_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USE
 val USERS_PKEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), arrayOf(Users.USERS.ID), true)
 val USERS_PUBLIC_ID_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_public_id_key"), arrayOf(Users.USERS.PUBLIC_ID), true)
 val USERS_SUB_KEY: UniqueKey<UsersRecord> = Internal.createUniqueKey(Users.USERS, DSL.name("users_sub_key"), arrayOf(Users.USERS.SUB), true)
+
+// -------------------------------------------------------------------------
+// FOREIGN KEY definitions
+// -------------------------------------------------------------------------
+
+val GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE: ForeignKey<GroupFeaturePermissionsRecord, FeaturesCatalogRecord> = Internal.createForeignKey(GroupFeaturePermissions.GROUP_FEATURE_PERMISSIONS, DSL.name("fk_gfp_feature"), arrayOf(GroupFeaturePermissions.GROUP_FEATURE_PERMISSIONS.FEATURE_ID), user.keys.FEATURES_CATALOG_PKEY, arrayOf(FeaturesCatalog.FEATURES_CATALOG.ID), true)
+val GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE_GROUP: ForeignKey<GroupFeaturePermissionsRecord, FeatureGroupsRecord> = Internal.createForeignKey(GroupFeaturePermissions.GROUP_FEATURE_PERMISSIONS, DSL.name("fk_gfp_feature_group"), arrayOf(GroupFeaturePermissions.GROUP_FEATURE_PERMISSIONS.FEATURE_GROUP_ID), user.keys.FEATURE_GROUPS_PKEY, arrayOf(FeatureGroups.FEATURE_GROUPS.ID), true)
+val NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY: ForeignKey<NotificationsRecord, UsersRecord> = Internal.createForeignKey(Notifications.NOTIFICATIONS, DSL.name("notifications_user_id_fkey"), arrayOf(Notifications.NOTIFICATIONS.USER_ID), user.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
+val USER_ADDRESSES__FK_USERADDRESSES_ADDRESS: ForeignKey<UserAddressesRecord, AddressesRecord> = Internal.createForeignKey(UserAddresses.USER_ADDRESSES, DSL.name("fk_useraddresses_address"), arrayOf(UserAddresses.USER_ADDRESSES.ADDRESS_ID), user.keys.ADDRESSES_PKEY, arrayOf(Addresses.ADDRESSES.ID), true)
+val USER_ADDRESSES__FK_USERADDRESSES_USER: ForeignKey<UserAddressesRecord, UsersRecord> = Internal.createForeignKey(UserAddresses.USER_ADDRESSES, DSL.name("fk_useraddresses_user"), arrayOf(UserAddresses.USER_ADDRESSES.USER_ID), user.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
+val USER_FEATURE_GROUPS__FK_UFG_FEATURE_GROUP: ForeignKey<UserFeatureGroupsRecord, FeatureGroupsRecord> = Internal.createForeignKey(UserFeatureGroups.USER_FEATURE_GROUPS, DSL.name("fk_ufg_feature_group"), arrayOf(UserFeatureGroups.USER_FEATURE_GROUPS.FEATURE_GROUP_ID), user.keys.FEATURE_GROUPS_PKEY, arrayOf(FeatureGroups.FEATURE_GROUPS.ID), true)
+val USER_FEATURE_GROUPS__FK_UFG_USER: ForeignKey<UserFeatureGroupsRecord, UsersRecord> = Internal.createForeignKey(UserFeatureGroups.USER_FEATURE_GROUPS, DSL.name("fk_ufg_user"), arrayOf(UserFeatureGroups.USER_FEATURE_GROUPS.USER_ID), user.keys.USERS_PKEY, arrayOf(Users.USERS.ID), true)
+val USERS__USERS_AVATAR_ASSET_ID_FKEY: ForeignKey<UsersRecord, AssetsRecord> = Internal.createForeignKey(Users.USERS, DSL.name("users_avatar_asset_id_fkey"), arrayOf(Users.USERS.AVATAR_ASSET_ID), user.keys.ASSETS_PKEY, arrayOf(Assets.ASSETS.ID), true)

@@ -16,6 +16,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -28,15 +29,26 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
 import user.Public
+import user.keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY
 import user.keys.USERS_CPF_KEY
 import user.keys.USERS_EMAIL_KEY
 import user.keys.USERS_PKEY
 import user.keys.USERS_PUBLIC_ID_KEY
 import user.keys.USERS_SUB_KEY
+import user.keys.USERS__USERS_AVATAR_ASSET_ID_FKEY
+import user.keys.USER_ADDRESSES__FK_USERADDRESSES_USER
+import user.keys.USER_FEATURE_GROUPS__FK_UFG_USER
+import user.tables.Addresses.AddressesPath
+import user.tables.Assets.AssetsPath
+import user.tables.FeatureGroups.FeatureGroupsPath
+import user.tables.Notifications.NotificationsPath
+import user.tables.UserAddresses.UserAddressesPath
+import user.tables.UserFeatureGroups.UserFeatureGroupsPath
 import user.tables.records.UsersRecord
 
 
@@ -164,10 +176,101 @@ open class Users(
      * Create a <code>public.users</code> table reference
      */
     constructor(): this(DSL.name("users"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UsersRecord>?, parentPath: InverseForeignKey<out Record, UsersRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, USERS, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class UsersPath : Users, Path<UsersRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UsersRecord>?, parentPath: InverseForeignKey<out Record, UsersRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<UsersRecord>): super(alias, aliased)
+        override fun `as`(alias: String): UsersPath = UsersPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): UsersPath = UsersPath(alias, this)
+        override fun `as`(alias: Table<*>): UsersPath = UsersPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<UsersRecord, Int?> = super.getIdentity() as Identity<UsersRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<UsersRecord> = USERS_PKEY
     override fun getUniqueKeys(): List<UniqueKey<UsersRecord>> = listOf(USERS_CPF_KEY, USERS_EMAIL_KEY, USERS_PUBLIC_ID_KEY, USERS_SUB_KEY)
+    override fun getReferences(): List<ForeignKey<UsersRecord, *>> = listOf(USERS__USERS_AVATAR_ASSET_ID_FKEY)
+
+    private lateinit var _assets: AssetsPath
+
+    /**
+     * Get the implicit join path to the <code>public.assets</code> table.
+     */
+    fun assets(): AssetsPath {
+        if (!this::_assets.isInitialized)
+            _assets = AssetsPath(this, USERS__USERS_AVATAR_ASSET_ID_FKEY, null)
+
+        return _assets;
+    }
+
+    val assets: AssetsPath
+        get(): AssetsPath = assets()
+
+    private lateinit var _userFeatureGroups: UserFeatureGroupsPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.user_feature_groups</code> table
+     */
+    fun userFeatureGroups(): UserFeatureGroupsPath {
+        if (!this::_userFeatureGroups.isInitialized)
+            _userFeatureGroups = UserFeatureGroupsPath(this, null, USER_FEATURE_GROUPS__FK_UFG_USER.inverseKey)
+
+        return _userFeatureGroups;
+    }
+
+    val userFeatureGroups: UserFeatureGroupsPath
+        get(): UserFeatureGroupsPath = userFeatureGroups()
+
+    private lateinit var _userAddresses: UserAddressesPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.user_addresses</code> table
+     */
+    fun userAddresses(): UserAddressesPath {
+        if (!this::_userAddresses.isInitialized)
+            _userAddresses = UserAddressesPath(this, null, USER_ADDRESSES__FK_USERADDRESSES_USER.inverseKey)
+
+        return _userAddresses;
+    }
+
+    val userAddresses: UserAddressesPath
+        get(): UserAddressesPath = userAddresses()
+
+    private lateinit var _notifications: NotificationsPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.notifications</code> table
+     */
+    fun notifications(): NotificationsPath {
+        if (!this::_notifications.isInitialized)
+            _notifications = NotificationsPath(this, null, NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY.inverseKey)
+
+        return _notifications;
+    }
+
+    val notifications: NotificationsPath
+        get(): NotificationsPath = notifications()
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.addresses</code> table
+     */
+    val addresses: AddressesPath
+        get(): AddressesPath = userAddresses().addresses()
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.feature_groups</code> table
+     */
+    val featureGroups: FeatureGroupsPath
+        get(): FeatureGroupsPath = userFeatureGroups().featureGroups()
     override fun `as`(alias: String): Users = Users(DSL.name(alias), this)
     override fun `as`(alias: Name): Users = Users(alias, this)
     override fun `as`(alias: Table<*>): Users = Users(alias.qualifiedName, this)

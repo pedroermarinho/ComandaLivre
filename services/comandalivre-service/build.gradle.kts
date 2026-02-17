@@ -18,7 +18,7 @@ description = "Demo project for Spring Boot"
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(libs.versions.jvm.get())
 	}
 }
 
@@ -172,7 +172,7 @@ jooq {
     version.set(libs.versions.jooq.get())
     edition.set(JooqEdition.OSS)
     configurations {
-        create("comandalivre") {
+        create("public") {
             generateSchemaSourceOnCompilation.set(false)
             jooqConfiguration.apply {
                 logging = org.jooq.meta.jaxb.Logging.DEBUG
@@ -197,7 +197,7 @@ jooq {
                     }
                     target.apply {
                         packageName = "comandalivre"
-                        directory = "src/main/kotlin/io/github/comandalivre/company/data/repositories/generated"
+                        directory = "src/main/kotlin/io/github/pedroermarinho/comandalivre/data/repositories/generated"
                     }
                 }
                 jdbc.apply {

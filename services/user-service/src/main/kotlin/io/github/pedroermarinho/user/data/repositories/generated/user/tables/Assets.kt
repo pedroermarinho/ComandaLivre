@@ -16,6 +16,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -28,12 +29,15 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
 import user.Public
 import user.keys.ASSETS_PKEY
 import user.keys.ASSETS_PUBLIC_ID_KEY
+import user.keys.USERS__USERS_AVATAR_ASSET_ID_FKEY
+import user.tables.Users.UsersPath
 import user.tables.records.AssetsRecord
 
 
@@ -173,10 +177,38 @@ open class Assets(
      * Create a <code>public.assets</code> table reference
      */
     constructor(): this(DSL.name("assets"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, AssetsRecord>?, parentPath: InverseForeignKey<out Record, AssetsRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, ASSETS, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class AssetsPath : Assets, Path<AssetsRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, AssetsRecord>?, parentPath: InverseForeignKey<out Record, AssetsRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<AssetsRecord>): super(alias, aliased)
+        override fun `as`(alias: String): AssetsPath = AssetsPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): AssetsPath = AssetsPath(alias, this)
+        override fun `as`(alias: Table<*>): AssetsPath = AssetsPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<AssetsRecord, Int?> = super.getIdentity() as Identity<AssetsRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<AssetsRecord> = ASSETS_PKEY
     override fun getUniqueKeys(): List<UniqueKey<AssetsRecord>> = listOf(ASSETS_PUBLIC_ID_KEY)
+
+    private lateinit var _users: UsersPath
+
+    /**
+     * Get the implicit to-many join path to the <code>public.users</code> table
+     */
+    fun users(): UsersPath {
+        if (!this::_users.isInitialized)
+            _users = UsersPath(this, null, USERS__USERS_AVATAR_ASSET_ID_FKEY.inverseKey)
+
+        return _users;
+    }
+
+    val users: UsersPath
+        get(): UsersPath = users()
     override fun `as`(alias: String): Assets = Assets(DSL.name(alias), this)
     override fun `as`(alias: Name): Assets = Assets(alias, this)
     override fun `as`(alias: Table<*>): Assets = Assets(alias.qualifiedName, this)

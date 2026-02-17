@@ -15,6 +15,7 @@ import org.jooq.ForeignKey
 import org.jooq.Index
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -27,6 +28,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -34,6 +36,10 @@ import user.Public
 import user.indexes.IDX_USER_ADDRESSES_ADDRESS_ID
 import user.indexes.IDX_USER_ADDRESSES_USER_ID
 import user.keys.PK_USER_ADDRESSES
+import user.keys.USER_ADDRESSES__FK_USERADDRESSES_ADDRESS
+import user.keys.USER_ADDRESSES__FK_USERADDRESSES_USER
+import user.tables.Addresses.AddressesPath
+import user.tables.Users.UsersPath
 import user.tables.records.UserAddressesRecord
 
 
@@ -154,9 +160,53 @@ open class UserAddresses(
      * Create a <code>public.user_addresses</code> table reference
      */
     constructor(): this(DSL.name("user_addresses"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UserAddressesRecord>?, parentPath: InverseForeignKey<out Record, UserAddressesRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, USER_ADDRESSES, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class UserAddressesPath : UserAddresses, Path<UserAddressesRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, UserAddressesRecord>?, parentPath: InverseForeignKey<out Record, UserAddressesRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<UserAddressesRecord>): super(alias, aliased)
+        override fun `as`(alias: String): UserAddressesPath = UserAddressesPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): UserAddressesPath = UserAddressesPath(alias, this)
+        override fun `as`(alias: Table<*>): UserAddressesPath = UserAddressesPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIndexes(): List<Index> = listOf(IDX_USER_ADDRESSES_ADDRESS_ID, IDX_USER_ADDRESSES_USER_ID)
     override fun getPrimaryKey(): UniqueKey<UserAddressesRecord> = PK_USER_ADDRESSES
+    override fun getReferences(): List<ForeignKey<UserAddressesRecord, *>> = listOf(USER_ADDRESSES__FK_USERADDRESSES_ADDRESS, USER_ADDRESSES__FK_USERADDRESSES_USER)
+
+    private lateinit var _addresses: AddressesPath
+
+    /**
+     * Get the implicit join path to the <code>public.addresses</code> table.
+     */
+    fun addresses(): AddressesPath {
+        if (!this::_addresses.isInitialized)
+            _addresses = AddressesPath(this, USER_ADDRESSES__FK_USERADDRESSES_ADDRESS, null)
+
+        return _addresses;
+    }
+
+    val addresses: AddressesPath
+        get(): AddressesPath = addresses()
+
+    private lateinit var _users: UsersPath
+
+    /**
+     * Get the implicit join path to the <code>public.users</code> table.
+     */
+    fun users(): UsersPath {
+        if (!this::_users.isInitialized)
+            _users = UsersPath(this, USER_ADDRESSES__FK_USERADDRESSES_USER, null)
+
+        return _users;
+    }
+
+    val users: UsersPath
+        get(): UsersPath = users()
     override fun `as`(alias: String): UserAddresses = UserAddresses(DSL.name(alias), this)
     override fun `as`(alias: Name): UserAddresses = UserAddresses(alias, this)
     override fun `as`(alias: Table<*>): UserAddresses = UserAddresses(alias.qualifiedName, this)

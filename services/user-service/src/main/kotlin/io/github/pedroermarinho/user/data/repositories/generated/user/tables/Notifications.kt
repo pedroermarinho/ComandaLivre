@@ -19,6 +19,7 @@ import org.jooq.Index
 import org.jooq.InverseForeignKey
 import org.jooq.JSONB
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -31,6 +32,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -40,6 +42,8 @@ import user.indexes.IDX_NOTIFICATIONS_USER_ID
 import user.indexes.IDX_NOTIFICATIONS_USER_ID_READ_AT
 import user.keys.NOTIFICATIONS_PKEY
 import user.keys.NOTIFICATIONS_PUBLIC_ID_KEY
+import user.keys.NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY
+import user.tables.Users.UsersPath
 import user.tables.records.NotificationsRecord
 
 
@@ -180,11 +184,40 @@ open class Notifications(
      * Create a <code>public.notifications</code> table reference
      */
     constructor(): this(DSL.name("notifications"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, NotificationsRecord>?, parentPath: InverseForeignKey<out Record, NotificationsRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, NOTIFICATIONS, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class NotificationsPath : Notifications, Path<NotificationsRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, NotificationsRecord>?, parentPath: InverseForeignKey<out Record, NotificationsRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<NotificationsRecord>): super(alias, aliased)
+        override fun `as`(alias: String): NotificationsPath = NotificationsPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): NotificationsPath = NotificationsPath(alias, this)
+        override fun `as`(alias: Table<*>): NotificationsPath = NotificationsPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIndexes(): List<Index> = listOf(IDX_NOTIFICATIONS_EVENT_KEY, IDX_NOTIFICATIONS_USER_ID, IDX_NOTIFICATIONS_USER_ID_READ_AT)
     override fun getIdentity(): Identity<NotificationsRecord, Int?> = super.getIdentity() as Identity<NotificationsRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<NotificationsRecord> = NOTIFICATIONS_PKEY
     override fun getUniqueKeys(): List<UniqueKey<NotificationsRecord>> = listOf(NOTIFICATIONS_PUBLIC_ID_KEY)
+    override fun getReferences(): List<ForeignKey<NotificationsRecord, *>> = listOf(NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY)
+
+    private lateinit var _users: UsersPath
+
+    /**
+     * Get the implicit join path to the <code>public.users</code> table.
+     */
+    fun users(): UsersPath {
+        if (!this::_users.isInitialized)
+            _users = UsersPath(this, NOTIFICATIONS__NOTIFICATIONS_USER_ID_FKEY, null)
+
+        return _users;
+    }
+
+    val users: UsersPath
+        get(): UsersPath = users()
     override fun `as`(alias: String): Notifications = Notifications(DSL.name(alias), this)
     override fun `as`(alias: Name): Notifications = Notifications(alias, this)
     override fun `as`(alias: Table<*>): Notifications = Notifications(alias.qualifiedName, this)

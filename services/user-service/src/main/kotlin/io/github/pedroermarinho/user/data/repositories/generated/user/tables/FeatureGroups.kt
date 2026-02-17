@@ -16,6 +16,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -28,6 +29,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -36,6 +38,12 @@ import user.keys.FEATURE_GROUPS_GROUP_KEY_KEY
 import user.keys.FEATURE_GROUPS_NAME_KEY
 import user.keys.FEATURE_GROUPS_PKEY
 import user.keys.FEATURE_GROUPS_PUBLIC_ID_KEY
+import user.keys.GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE_GROUP
+import user.keys.USER_FEATURE_GROUPS__FK_UFG_FEATURE_GROUP
+import user.tables.FeaturesCatalog.FeaturesCatalogPath
+import user.tables.GroupFeaturePermissions.GroupFeaturePermissionsPath
+import user.tables.UserFeatureGroups.UserFeatureGroupsPath
+import user.tables.Users.UsersPath
 import user.tables.records.FeatureGroupsRecord
 
 
@@ -151,10 +159,69 @@ open class FeatureGroups(
      * Create a <code>public.feature_groups</code> table reference
      */
     constructor(): this(DSL.name("feature_groups"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, FeatureGroupsRecord>?, parentPath: InverseForeignKey<out Record, FeatureGroupsRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, FEATURE_GROUPS, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class FeatureGroupsPath : FeatureGroups, Path<FeatureGroupsRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, FeatureGroupsRecord>?, parentPath: InverseForeignKey<out Record, FeatureGroupsRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<FeatureGroupsRecord>): super(alias, aliased)
+        override fun `as`(alias: String): FeatureGroupsPath = FeatureGroupsPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): FeatureGroupsPath = FeatureGroupsPath(alias, this)
+        override fun `as`(alias: Table<*>): FeatureGroupsPath = FeatureGroupsPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<FeatureGroupsRecord, Int?> = super.getIdentity() as Identity<FeatureGroupsRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<FeatureGroupsRecord> = FEATURE_GROUPS_PKEY
     override fun getUniqueKeys(): List<UniqueKey<FeatureGroupsRecord>> = listOf(FEATURE_GROUPS_GROUP_KEY_KEY, FEATURE_GROUPS_NAME_KEY, FEATURE_GROUPS_PUBLIC_ID_KEY)
+
+    private lateinit var _groupFeaturePermissions: GroupFeaturePermissionsPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.group_feature_permissions</code> table
+     */
+    fun groupFeaturePermissions(): GroupFeaturePermissionsPath {
+        if (!this::_groupFeaturePermissions.isInitialized)
+            _groupFeaturePermissions = GroupFeaturePermissionsPath(this, null, GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE_GROUP.inverseKey)
+
+        return _groupFeaturePermissions;
+    }
+
+    val groupFeaturePermissions: GroupFeaturePermissionsPath
+        get(): GroupFeaturePermissionsPath = groupFeaturePermissions()
+
+    private lateinit var _userFeatureGroups: UserFeatureGroupsPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.user_feature_groups</code> table
+     */
+    fun userFeatureGroups(): UserFeatureGroupsPath {
+        if (!this::_userFeatureGroups.isInitialized)
+            _userFeatureGroups = UserFeatureGroupsPath(this, null, USER_FEATURE_GROUPS__FK_UFG_FEATURE_GROUP.inverseKey)
+
+        return _userFeatureGroups;
+    }
+
+    val userFeatureGroups: UserFeatureGroupsPath
+        get(): UserFeatureGroupsPath = userFeatureGroups()
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.features_catalog</code> table
+     */
+    val featuresCatalog: FeaturesCatalogPath
+        get(): FeaturesCatalogPath = groupFeaturePermissions().featuresCatalog()
+
+    /**
+     * Get the implicit many-to-many join path to the <code>public.users</code>
+     * table
+     */
+    val users: UsersPath
+        get(): UsersPath = userFeatureGroups().users()
     override fun `as`(alias: String): FeatureGroups = FeatureGroups(DSL.name(alias), this)
     override fun `as`(alias: Name): FeatureGroups = FeatureGroups(alias, this)
     override fun `as`(alias: Table<*>): FeatureGroups = FeatureGroups(alias.qualifiedName, this)

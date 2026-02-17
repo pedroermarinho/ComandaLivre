@@ -16,34 +16,9 @@ group = "io.github.pedroermarinho"
 version = "0.0.1-SNAPSHOT"
 description = "Demo project for Spring Boot"
 
-
-val versions =
-    mapOf(
-        "kotlinCoroutines" to "1.10.2",
-        "springdoc" to "2.8.5",
-        "caffeine" to "3.2.0",
-        "firebase" to "9.4.3",
-        "jooq" to "3.20.11",
-        "picocli" to "4.7.6",
-        "snakeyaml" to "2.4",
-        "slf4j" to "2.0.17",
-        "logback" to "1.5.27",
-        "kotlinLogging" to "7.0.14",
-        "awsSdk" to "2.31.0",
-        "springDotenv" to "4.0.0",
-        "uuidCreator" to "6.1.1",
-        "springModulith" to "1.4.0",
-        "assertjCore" to "3.25.3",
-        "javafaker" to "1.0.2",
-        "mockitoKotlin" to "5.3.1",
-        "adminServer" to "3.5.0",
-        "restAssured" to "5.5.6",
-        "mockk" to "1.14.6",
-    )
-
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(libs.versions.jvm.get())
     }
 }
 
@@ -197,7 +172,7 @@ jooq {
     version.set(libs.versions.jooq.get())
     edition.set(JooqEdition.OSS)
     configurations {
-        create("user") {
+        create("public") {
             generateSchemaSourceOnCompilation.set(false)
             jooqConfiguration.apply {
                 logging = org.jooq.meta.jaxb.Logging.DEBUG

@@ -15,6 +15,7 @@ import org.jooq.ForeignKey
 import org.jooq.Index
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -27,6 +28,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -34,6 +36,10 @@ import user.Public
 import user.indexes.IDX_GROUP_FEATURE_PERMISSIONS_FEATURE_GROUP_ID_ON_GFP
 import user.indexes.IDX_GROUP_FEATURE_PERMISSIONS_FEATURE_ID_ON_GFP
 import user.keys.GROUP_FEATURE_PERMISSIONS_PKEY
+import user.keys.GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE
+import user.keys.GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE_GROUP
+import user.tables.FeatureGroups.FeatureGroupsPath
+import user.tables.FeaturesCatalog.FeaturesCatalogPath
 import user.tables.records.GroupFeaturePermissionsRecord
 
 
@@ -152,9 +158,55 @@ open class GroupFeaturePermissions(
      * Create a <code>public.group_feature_permissions</code> table reference
      */
     constructor(): this(DSL.name("group_feature_permissions"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, GroupFeaturePermissionsRecord>?, parentPath: InverseForeignKey<out Record, GroupFeaturePermissionsRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, GROUP_FEATURE_PERMISSIONS, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class GroupFeaturePermissionsPath : GroupFeaturePermissions, Path<GroupFeaturePermissionsRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, GroupFeaturePermissionsRecord>?, parentPath: InverseForeignKey<out Record, GroupFeaturePermissionsRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<GroupFeaturePermissionsRecord>): super(alias, aliased)
+        override fun `as`(alias: String): GroupFeaturePermissionsPath = GroupFeaturePermissionsPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): GroupFeaturePermissionsPath = GroupFeaturePermissionsPath(alias, this)
+        override fun `as`(alias: Table<*>): GroupFeaturePermissionsPath = GroupFeaturePermissionsPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIndexes(): List<Index> = listOf(IDX_GROUP_FEATURE_PERMISSIONS_FEATURE_GROUP_ID_ON_GFP, IDX_GROUP_FEATURE_PERMISSIONS_FEATURE_ID_ON_GFP)
     override fun getPrimaryKey(): UniqueKey<GroupFeaturePermissionsRecord> = GROUP_FEATURE_PERMISSIONS_PKEY
+    override fun getReferences(): List<ForeignKey<GroupFeaturePermissionsRecord, *>> = listOf(GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE, GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE_GROUP)
+
+    private lateinit var _featuresCatalog: FeaturesCatalogPath
+
+    /**
+     * Get the implicit join path to the <code>public.features_catalog</code>
+     * table.
+     */
+    fun featuresCatalog(): FeaturesCatalogPath {
+        if (!this::_featuresCatalog.isInitialized)
+            _featuresCatalog = FeaturesCatalogPath(this, GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE, null)
+
+        return _featuresCatalog;
+    }
+
+    val featuresCatalog: FeaturesCatalogPath
+        get(): FeaturesCatalogPath = featuresCatalog()
+
+    private lateinit var _featureGroups: FeatureGroupsPath
+
+    /**
+     * Get the implicit join path to the <code>public.feature_groups</code>
+     * table.
+     */
+    fun featureGroups(): FeatureGroupsPath {
+        if (!this::_featureGroups.isInitialized)
+            _featureGroups = FeatureGroupsPath(this, GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE_GROUP, null)
+
+        return _featureGroups;
+    }
+
+    val featureGroups: FeatureGroupsPath
+        get(): FeatureGroupsPath = featureGroups()
     override fun `as`(alias: String): GroupFeaturePermissions = GroupFeaturePermissions(DSL.name(alias), this)
     override fun `as`(alias: Name): GroupFeaturePermissions = GroupFeaturePermissions(alias, this)
     override fun `as`(alias: Table<*>): GroupFeaturePermissions = GroupFeaturePermissions(alias.qualifiedName, this)

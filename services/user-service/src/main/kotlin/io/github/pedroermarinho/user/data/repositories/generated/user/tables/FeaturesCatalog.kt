@@ -16,6 +16,7 @@ import org.jooq.ForeignKey
 import org.jooq.Identity
 import org.jooq.InverseForeignKey
 import org.jooq.Name
+import org.jooq.Path
 import org.jooq.PlainSQL
 import org.jooq.QueryPart
 import org.jooq.Record
@@ -28,6 +29,7 @@ import org.jooq.TableField
 import org.jooq.TableOptions
 import org.jooq.UniqueKey
 import org.jooq.impl.DSL
+import org.jooq.impl.Internal
 import org.jooq.impl.SQLDataType
 import org.jooq.impl.TableImpl
 
@@ -35,6 +37,9 @@ import user.Public
 import user.keys.FEATURES_CATALOG_FEATURE_KEY_KEY
 import user.keys.FEATURES_CATALOG_PKEY
 import user.keys.FEATURES_CATALOG_PUBLIC_ID_KEY
+import user.keys.GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE
+import user.tables.FeatureGroups.FeatureGroupsPath
+import user.tables.GroupFeaturePermissions.GroupFeaturePermissionsPath
 import user.tables.records.FeaturesCatalogRecord
 
 
@@ -152,10 +157,46 @@ open class FeaturesCatalog(
      * Create a <code>public.features_catalog</code> table reference
      */
     constructor(): this(DSL.name("features_catalog"), null)
+
+    constructor(path: Table<out Record>, childPath: ForeignKey<out Record, FeaturesCatalogRecord>?, parentPath: InverseForeignKey<out Record, FeaturesCatalogRecord>?): this(Internal.createPathAlias(path, childPath, parentPath), path, childPath, parentPath, FEATURES_CATALOG, null, null)
+
+    /**
+     * A subtype implementing {@link Path} for simplified path-based joins.
+     */
+    open class FeaturesCatalogPath : FeaturesCatalog, Path<FeaturesCatalogRecord> {
+        constructor(path: Table<out Record>, childPath: ForeignKey<out Record, FeaturesCatalogRecord>?, parentPath: InverseForeignKey<out Record, FeaturesCatalogRecord>?): super(path, childPath, parentPath)
+        private constructor(alias: Name, aliased: Table<FeaturesCatalogRecord>): super(alias, aliased)
+        override fun `as`(alias: String): FeaturesCatalogPath = FeaturesCatalogPath(DSL.name(alias), this)
+        override fun `as`(alias: Name): FeaturesCatalogPath = FeaturesCatalogPath(alias, this)
+        override fun `as`(alias: Table<*>): FeaturesCatalogPath = FeaturesCatalogPath(alias.qualifiedName, this)
+    }
     override fun getSchema(): Schema? = if (aliased()) null else Public.PUBLIC
     override fun getIdentity(): Identity<FeaturesCatalogRecord, Int?> = super.getIdentity() as Identity<FeaturesCatalogRecord, Int?>
     override fun getPrimaryKey(): UniqueKey<FeaturesCatalogRecord> = FEATURES_CATALOG_PKEY
     override fun getUniqueKeys(): List<UniqueKey<FeaturesCatalogRecord>> = listOf(FEATURES_CATALOG_FEATURE_KEY_KEY, FEATURES_CATALOG_PUBLIC_ID_KEY)
+
+    private lateinit var _groupFeaturePermissions: GroupFeaturePermissionsPath
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>public.group_feature_permissions</code> table
+     */
+    fun groupFeaturePermissions(): GroupFeaturePermissionsPath {
+        if (!this::_groupFeaturePermissions.isInitialized)
+            _groupFeaturePermissions = GroupFeaturePermissionsPath(this, null, GROUP_FEATURE_PERMISSIONS__FK_GFP_FEATURE.inverseKey)
+
+        return _groupFeaturePermissions;
+    }
+
+    val groupFeaturePermissions: GroupFeaturePermissionsPath
+        get(): GroupFeaturePermissionsPath = groupFeaturePermissions()
+
+    /**
+     * Get the implicit many-to-many join path to the
+     * <code>public.feature_groups</code> table
+     */
+    val featureGroups: FeatureGroupsPath
+        get(): FeatureGroupsPath = groupFeaturePermissions().featureGroups()
     override fun `as`(alias: String): FeaturesCatalog = FeaturesCatalog(DSL.name(alias), this)
     override fun `as`(alias: Name): FeaturesCatalog = FeaturesCatalog(alias, this)
     override fun `as`(alias: Table<*>): FeaturesCatalog = FeaturesCatalog(alias.qualifiedName, this)

@@ -9,7 +9,7 @@ import io.github.pedroermarinho.user.infra.mappers.AssetPersistenceMapper
 import io.github.pedroermarinho.user.infra.mappers.toEntity
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import shared.tables.references.ASSETS
+import user.tables.references.ASSETS
 import java.util.*
 
 @Repository

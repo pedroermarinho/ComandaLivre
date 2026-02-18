@@ -8,14 +8,15 @@ springBoot = "4.0.2"
 springBootV4 = "4.0.0-M2"
 springDependencyManagement = "1.1.7"
 springModulith = "2.0.2"
-springDotenv = "4.0.0"
+springDotenv = "5.1.0"
 springDoc = "2.8.5"
 kotlinCoroutines = "1.10.2"
+springCloud = "2025.0.1"
 
 # --- Database & Persistence ---
 jooq = "3.19.29"
-liquibase = "2.2.2"
-liquibaseCore = "4.24.0"
+liquibase = "3.1.0"
+liquibaseCore = "5.0.1"
 uuidCreator = "6.1.1"
 caffeine = "3.2.0"
 redisTestContainer = "1.6.4"
@@ -27,8 +28,8 @@ firebase = "9.4.3"
 grpcNetty = "1.79.0"
 
 # --- Tools & Utilities ---
-picocli = "4.7.6"
-snakeyaml = "2.4"
+picocli = "4.7.7"
+snakeyaml = "2.5"
 nimbusJoseJwt = "10.5"
 jackson = "2.16.1"
 testContainer = "1.21.4"
@@ -65,6 +66,7 @@ protocGenGrpcKotlin = "1.5.0"
 
 [libraries]
 # --- Spring Boot Core ---
+spring-cloud-dependencies = { group = "org.springframework.cloud", name = "spring-cloud-dependencies", version.ref = "springCloud" }
 spring-boot-starter-actuator = { group = "org.springframework.boot", name = "spring-boot-starter-actuator" }
 spring-boot-starter-cache = { group = "org.springframework.boot", name = "spring-boot-starter-cache" }
 spring-boot-starter-mail = { group = "org.springframework.boot", name = "spring-boot-starter-mail" }
@@ -107,12 +109,13 @@ jooq = { group = "org.jooq", name = "jooq", version.ref = "jooq" }
 jooq-meta = { group = "org.jooq", name = "jooq-meta", version.ref = "jooq" }
 jooq-codegen = { group = "org.jooq", name = "jooq-codegen", version.ref = "jooq" }
 jooq-meta-extensions = { group = "org.jooq", name = "jooq-meta-extensions", version.ref = "jooq" }
-liquibase-core = { group = "org.liquibase", name = "liquibase-core" }
+liquibase-core = { group = "org.liquibase", name = "liquibase-core", version.ref = "liquibaseCore" }
 uuid-creator = { group = "com.github.f4b6a3", name = "uuid-creator", version.ref = "uuidCreator" }
 caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version.ref = "caffeine" }
 
 # --- Utilities & 3rd Party ---
-spring-dotenv = { group = "me.paulschwarz", name = "spring-dotenv", version.ref = "springDotenv" }
+spring-dotenv-bom = { module = "me.paulschwarz:spring-dotenv-bom", version.ref = "springDotenv" }
+spring-dotenv = { group = "me.paulschwarz", name = "springboot4-dotenv", version.ref = "springDotenv" }
 nimbus-jose-jwt = { group = "com.nimbusds", name = "nimbus-jose-jwt", version.ref = "nimbusJoseJwt" }
 firebase-admin = { group = "com.google.firebase", name = "firebase-admin", version.ref = "firebase" }
 aws-s3 = { group = "software.amazon.awssdk", name = "s3", version.ref = "awsSdk" }

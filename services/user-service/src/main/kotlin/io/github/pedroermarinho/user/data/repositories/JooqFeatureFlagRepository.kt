@@ -12,7 +12,7 @@ import io.github.pedroermarinho.shared.util.fetchPage
 import io.github.pedroermarinho.shared.util.getSortFields
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import shared.tables.references.FEATURE_FLAGS
+import user.tables.references.FEATURE_FLAGS
 import java.util.*
 
 @Repository

@@ -31,19 +31,25 @@ repositories {
     mavenCentral()
 }
 
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.cloud:spring-cloud-dependencies:2025.0.1")
-    }
-}
-
 dependencies {
     implementation(project(":libs:shared-common"))
+
+    implementation(platform(libs.spring.cloud.dependencies))
+    implementation(platform(libs.spring.dotenv.bom))
 
     // --- Webflux & GraphQL ---
     implementation(libs.spring.boot.starter.graphql)
     implementation(libs.spring.boot.starter.webflux)
     implementation(libs.spring.cloud.starter.gateway.server.webflux)
+
+    // --- Spring Extras ---
+    implementation(libs.spring.dotenv)
+    annotationProcessor(libs.spring.boot.configuration.processor)
+
+
+    // --- Security ---
+    implementation(libs.spring.boot.starter.oauth2.resource.server)
+    implementation(libs.spring.boot.starter.security)
 
     // --- Kotlin Utilities ---
     implementation(libs.jackson.module.kotlin)

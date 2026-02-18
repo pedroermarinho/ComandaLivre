@@ -1,6 +1,6 @@
 package io.github.pedroermarinho.user.presenter.controllers
 
-import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
+//import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
 import io.github.pedroermarinho.user.domain.dtos.feature.FeatureFilterDTO
 import io.github.pedroermarinho.shared.dtos.page.PageDTO
 import io.github.pedroermarinho.shared.dtos.page.PageableDTO
@@ -24,9 +24,9 @@ class FeatureController(
     private val searchFeatureUseCase: SearchFeatureUseCase,
     private val featureMapper: FeatureMapper,
 ) {
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar todas as feature com paginação",
         description = "Buscar todas as feature com paginação",

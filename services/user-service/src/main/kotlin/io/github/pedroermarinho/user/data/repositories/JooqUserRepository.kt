@@ -18,9 +18,9 @@ import org.jooq.Record
 import org.jooq.SelectJoinStep
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
-import shared.tables.references.FEATURE_GROUPS
-import shared.tables.references.USERS
-import shared.tables.references.USER_FEATURE_GROUPS
+import user.tables.references.FEATURE_GROUPS
+import user.tables.references.USERS
+import user.tables.references.USER_FEATURE_GROUPS
 import java.time.LocalDate
 import java.util.*
 

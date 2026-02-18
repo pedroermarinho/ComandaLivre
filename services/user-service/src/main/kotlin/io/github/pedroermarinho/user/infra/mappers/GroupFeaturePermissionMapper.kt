@@ -8,7 +8,7 @@ import io.github.pedroermarinho.user.domain.services.CurrentUserService
 import io.github.pedroermarinho.shared.valueobject.EntityAudit
 import io.github.pedroermarinho.shared.util.errorDataConversion
 import org.springframework.stereotype.Component
-import shared.tables.records.UserFeatureGroupsRecord
+import user.tables.records.UserFeatureGroupsRecord
 
 @Component
 class UserFeatureGroupPersistenceMapper(

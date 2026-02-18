@@ -14,7 +14,7 @@ import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
-import shared.tables.references.NOTIFICATIONS
+import user.tables.references.NOTIFICATIONS
 import java.util.UUID
 
 @Repository

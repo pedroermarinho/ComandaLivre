@@ -8,7 +8,6 @@ data class AppProperties(
     val version: String = "1.0.0",
     val cors: List<String> = listOf("*"),
     val frontendUrl: String = "http://localhost:3000",
-    val rememberMeKey: String,
     val defaultAdminEmails: String = "",
     val environment: String = "dev",
 )

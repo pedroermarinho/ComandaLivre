@@ -1,6 +1,6 @@
 package io.github.pedroermarinho.user.presenter.controllers
 
-import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
+//import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
 import io.github.pedroermarinho.shared.dtos.page.PageDTO
 import io.github.pedroermarinho.shared.dtos.page.PageableDTO
 import io.github.pedroermarinho.user.domain.enums.FeatureEnum
@@ -22,9 +22,9 @@ class FeatureFlagController(
     private val updateFeatureFlagUseCase: UpdateFeatureFlagUseCase,
     private val featureFlagMapper: FeatureFlagMapper,
 ) {
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar todas as feature flags com paginação",
         description = "Buscar todas as feature flags com paginação",
@@ -47,9 +47,9 @@ class FeatureFlagController(
         return ResponseEntity.ok(result.map { featureFlagMapper.toResponse(it) })
     }
 
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(summary = "Ativar uma feature", description = "Ativar uma feature")
     @PutMapping("/{id}/enable")
     fun enable(
@@ -59,9 +59,9 @@ class FeatureFlagController(
         return ResponseEntity.ok(result)
     }
 
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(summary = "Desativar uma feature", description = "Desativar uma feature")
     @PutMapping("/{publicId}/disable")
     fun disable(

@@ -14,9 +14,9 @@ import io.github.pedroermarinho.shared.util.getSortFields
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
-import shared.tables.references.FEATURES_CATALOG
-import shared.tables.references.FEATURE_GROUPS
-import shared.tables.references.GROUP_FEATURE_PERMISSIONS
+import user.tables.references.FEATURES_CATALOG
+import user.tables.references.FEATURE_GROUPS
+import user.tables.references.GROUP_FEATURE_PERMISSIONS
 import java.util.*
 
 @Repository

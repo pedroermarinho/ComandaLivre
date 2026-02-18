@@ -2,7 +2,7 @@ package io.github.pedroermarinho.user.domain.usecases.user
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.pedroermarinho.shared.annotations.UseCase
-import io.github.pedroermarinho.user.domain.dtos.user.UserAuthDTO
+import io.github.pedroermarinho.shared.dtos.user.UserAuthDTO
 import io.github.pedroermarinho.user.domain.entities.UserEntity
 import io.github.pedroermarinho.user.domain.enums.GroupEnum
 import io.github.pedroermarinho.user.domain.event.NewUserRegisteredEvent

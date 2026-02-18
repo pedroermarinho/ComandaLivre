@@ -6,7 +6,7 @@ import io.github.pedroermarinho.user.domain.dtos.group.GroupFeaturePermissionDTO
 import io.github.pedroermarinho.user.domain.entities.GroupFeaturePermissionEntity
 import io.github.pedroermarinho.shared.valueobject.EntityAudit
 import io.github.pedroermarinho.shared.util.errorDataConversion
-import shared.tables.records.GroupFeaturePermissionsRecord
+import user.tables.records.GroupFeaturePermissionsRecord
 
 fun GroupFeaturePermissionsRecord.toEntity(): Result<GroupFeaturePermissionEntity> =
     errorDataConversion {

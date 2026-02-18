@@ -25,6 +25,12 @@ repositories {
     mavenCentral()
 }
 
+buildscript {
+    dependencies {
+        classpath(libs.liquibase.core)
+    }
+}
+
 dependencies {
     implementation(project(":libs:shared-common"))
 

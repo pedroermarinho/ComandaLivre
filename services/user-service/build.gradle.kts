@@ -32,32 +32,27 @@ repositories {
     mavenCentral()
 }
 
-extra["springModulithVersion"] = "1.4.7"
+buildscript {
+    dependencies {
+        classpath(libs.liquibase.core)
+    }
+}
 
 dependencies {
     implementation(project(":libs:shared-common"))
 
+    implementation(platform(libs.spring.dotenv.bom))
+
     // --- Core Spring ---
     implementation(libs.spring.boot.starter.cache)
     implementation(libs.spring.boot.starter.mail)
-    implementation(libs.spring.boot.starter.oauth2.resource.server)
-    implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.websocket)
     implementation(libs.spring.data.commons)
 
-    // --- Spring Modulith ---
-    implementation(libs.spring.modulith.starter.core)
-    implementation(libs.spring.modulith.actuator)
-    implementation(libs.spring.modulith.docs)
-    implementation(libs.spring.modulith.events.api)
-    implementation(libs.spring.modulith.starter.jdbc)
-    testImplementation(libs.spring.modulith.starter.test)
-
     // --- Spring Extras ---
     implementation(libs.spring.boot.starter.actuator)
-    // developmentOnly(libs.spring.boot.devtools) // Descomentar se necessário
     annotationProcessor(libs.spring.boot.configuration.processor)
     implementation(libs.spring.dotenv)
     implementation(libs.spring.boot.starter.aop)
@@ -90,9 +85,6 @@ dependencies {
     // --- Cache ---
     implementation(libs.caffeine)
     implementation(libs.spring.boot.starter.data.redis)
-
-    // --- Firebase ---
-    implementation(libs.firebase.admin)
 
     // --- AWS ---
     implementation(libs.aws.s3)
@@ -130,12 +122,6 @@ dependencies {
     testImplementation(libs.testcontainers.redis)
     testImplementation(libs.testcontainers.toxiproxy)
     testImplementation(libs.mockk)
-}
-
-dependencyManagement {
-    imports {
-        mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
-    }
 }
 
 kotlin {

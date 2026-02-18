@@ -7,7 +7,7 @@ import io.github.pedroermarinho.user.domain.usecases.address.SearchAddressUseCas
 import io.github.pedroermarinho.shared.valueobject.EntityAudit
 import io.github.pedroermarinho.shared.util.errorDataConversion
 import org.springframework.stereotype.Component
-import shared.tables.records.UserAddressesRecord
+import user.tables.records.UserAddressesRecord
 
 @Component
 class UserAddressPersistenceMapper(

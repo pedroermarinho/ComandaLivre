@@ -5,7 +5,7 @@ import io.github.pedroermarinho.user.domain.forms.user.AddAddressToUserForm
 import io.github.pedroermarinho.user.domain.repositories.UserAddressRepository
 import org.jooq.DSLContext
 import org.springframework.stereotype.Repository
-import shared.tables.references.USER_ADDRESSES
+import user.tables.references.USER_ADDRESSES
 
 @Repository
 class UserAddressRepositoryImpl(

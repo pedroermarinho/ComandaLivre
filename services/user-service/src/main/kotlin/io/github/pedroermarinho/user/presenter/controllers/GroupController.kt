@@ -1,6 +1,6 @@
 package io.github.pedroermarinho.user.presenter.controllers
 
-import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
+//import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
 import io.github.pedroermarinho.shared.dtos.page.PageDTO
 import io.github.pedroermarinho.shared.dtos.page.PageableDTO
 import io.github.pedroermarinho.user.domain.enums.FeatureEnum
@@ -36,9 +36,9 @@ class GroupController(
     private val featureMapper: FeatureMapper,
     private val userMapper: UserMapper,
 ) {
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar todas os grupos com paginação",
         description = "Buscar todas os grupo com paginação",
@@ -61,10 +61,10 @@ class GroupController(
         return ResponseEntity.ok(result.map { groupMapper.toResponse(it) })
     }
 
-    @RequirePermissions(
-        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @PostMapping
     fun create(
         @RequestBody @Valid form: FeatureGroupForm,
@@ -73,9 +73,9 @@ class GroupController(
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @GetMapping("/{groupId}/features")
     fun getGroupFeatures(
         @PathVariable groupId: UUID,
@@ -98,10 +98,10 @@ class GroupController(
         return ResponseEntity.ok(result.map { featureMapper.toResponse(it) })
     }
 
-    @RequirePermissions(
-        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @PostMapping("/{groupId}/features/{featureId}")
     fun addFeatureToGroup(
         @PathVariable groupId: UUID,
@@ -115,10 +115,10 @@ class GroupController(
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
-    @RequirePermissions(
-        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @DeleteMapping("/{groupId}/features/{featureId}")
     fun removeFeatureFromGroup(
         @PathVariable groupId: UUID,
@@ -128,10 +128,10 @@ class GroupController(
         return ResponseEntity.noContent().build()
     }
 
-    @RequirePermissions(
-        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @PostMapping("/{groupId}/users/{userId}")
     fun addUserToGroup(
         @PathVariable groupId: UUID,
@@ -142,10 +142,10 @@ class GroupController(
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 
-    @RequirePermissions(
-        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        all = [FeatureEnum.USER_ROLE_MANAGEMENT],
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @DeleteMapping("/{groupId}/users/{userId}")
     fun removeUserFromGroup(
         @PathVariable groupId: UUID,

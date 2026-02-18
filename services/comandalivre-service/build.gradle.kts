@@ -32,6 +32,12 @@ repositories {
 	mavenCentral()
 }
 
+buildscript {
+    dependencies {
+        classpath(libs.liquibase.core)
+    }
+}
+
 extra["springModulithVersion"] = "1.4.7"
 
 dependencies {

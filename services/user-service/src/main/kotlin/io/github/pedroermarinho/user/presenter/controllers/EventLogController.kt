@@ -1,9 +1,8 @@
 package io.github.pedroermarinho.user.presenter.controllers
 
-import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
+//import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
 import io.github.pedroermarinho.shared.dtos.page.PageDTO
 import io.github.pedroermarinho.shared.dtos.page.PageableDTO
-import io.github.pedroermarinho.user.domain.enums.FeatureEnum
 import io.github.pedroermarinho.user.domain.response.eventlog.EventLogResponse
 import io.github.pedroermarinho.user.domain.usecases.eventlog.SearchEventLogUseCase
 import io.github.pedroermarinho.user.infra.mappers.EventLogMapper
@@ -22,9 +21,9 @@ class EventLogController(
     private val searchEventLogUseCase: SearchEventLogUseCase,
     private val eventLogMapper: EventLogMapper,
 ) {
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar todos os logs de eventos",
         description = "Buscar todos os logs de eventos",

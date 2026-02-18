@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class CurrentUserService{
-     fun getLoggedUser(): Result<UserAuthDTO> =
+    fun getLoggedUser(): Result<UserAuthDTO> =
         runCatching {
-            val principal = SecurityContextHolder.getContext().authentication.principal
+            val principal = SecurityContextHolder.getContext().authentication?.principal
 
             return if (principal is Jwt) {
                 Result.success(convertToUserDTO(principal))

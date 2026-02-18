@@ -10,8 +10,8 @@ import io.github.pedroermarinho.shared.valueobject.EntityId
 import io.github.pedroermarinho.shared.util.errorDataConversion
 import org.jooq.DSLContext
 import org.springframework.stereotype.Component
-import shared.tables.records.NotificationsRecord
-import shared.tables.references.NOTIFICATIONS
+import user.tables.records.NotificationsRecord
+import user.tables.references.NOTIFICATIONS
 
 @Component
 class NotificationPersistenceMapper(

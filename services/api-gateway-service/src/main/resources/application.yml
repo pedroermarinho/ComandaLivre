@@ -10,6 +10,11 @@ spring:
                             uri: ${LEGACY_API_URL:http://localhost:8086}
                             predicates:
                                 - Path=/api/**
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            jwk-set-uri: ${JWK_SET_URI}
 
 #logging:
 ##    level:

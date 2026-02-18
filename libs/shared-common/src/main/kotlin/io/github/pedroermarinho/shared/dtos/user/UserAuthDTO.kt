@@ -1,4 +1,4 @@
-package io.github.pedroermarinho.gateway.dtos
+package io.github.pedroermarinho.shared.dtos.user
 
 data class UserAuthDTO(
     val sub: String,

@@ -13,8 +13,8 @@ import org.jooq.Condition
 import org.jooq.DSLContext
 import org.jooq.impl.DSL
 import org.springframework.stereotype.Repository
-import shared.tables.references.EVENT_LOG
-import shared.tables.references.USERS
+import user.tables.references.EVENT_LOG
+import user.tables.references.USERS
 
 @Repository
 class JooqEventLogRepository(

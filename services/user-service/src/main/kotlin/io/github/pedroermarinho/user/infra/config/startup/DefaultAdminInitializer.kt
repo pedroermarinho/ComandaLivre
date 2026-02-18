@@ -21,7 +21,7 @@ class DefaultAdminInitializer(
 ) : ApplicationRunner {
     private val log = KotlinLogging.logger {}
 
-    override fun run(args: ApplicationArguments?) {
+    override fun run(args: ApplicationArguments) {
         if (appProperties.defaultAdminEmails.isBlank()) {
             log.info { "Nenhum e-mail de administrador padrão configurado." }
             return

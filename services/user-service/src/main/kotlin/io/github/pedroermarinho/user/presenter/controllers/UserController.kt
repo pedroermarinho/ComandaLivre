@@ -1,6 +1,6 @@
 package io.github.pedroermarinho.user.presenter.controllers
 
-import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
+//import io.github.pedroermarinho.user.domain.annotations.RequirePermissions
 import io.github.pedroermarinho.shared.dtos.page.PageDTO
 import io.github.pedroermarinho.shared.dtos.page.PageableDTO
 import io.github.pedroermarinho.user.domain.dtos.user.UserFilterDTO
@@ -29,9 +29,9 @@ class UserController(
     private val updateUserUseCase: UpdateUserUseCase,
     private val userMapper: UserMapper,
 ) {
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar todos os usuário com paginação",
         description = "Buscar todos os usuário com paginação",
@@ -59,9 +59,9 @@ class UserController(
         return ResponseEntity.ok(result.map { userMapper.toResponse(it) })
     }
 
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar a quantidade de usuários ativos no sistema",
         description = "Buscar a quantidade de usuários ativos no sistema",
@@ -72,9 +72,9 @@ class UserController(
         return ResponseEntity.ok(result)
     }
 
-    @RequirePermissions(
-        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
-    )
+//    @RequirePermissions(
+//        any = [FeatureEnum.ADMIN_DASHBOARD_ACCESS],
+//    )
     @Operation(
         summary = "Buscar registros de usuários nos últimos dias",
         description = "Retorna a quantidade de usuários cadastrados por dia em um intervalo de dias especificado",

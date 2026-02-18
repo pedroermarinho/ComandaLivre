@@ -40,6 +40,11 @@ spring:
     password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
 
+  grpc:
+    server:
+      port: ${GRPC_PORT:9090}
+      reflection:
+        enabled: true
   servlet:
     multipart:
       max-file-size: 15MB

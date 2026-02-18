@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package comandalivre.v1;
+
+import "messages/page_messages.proto";
+
+option java_multiple_files = true;
+option java_package = "io.github.pedroermarinho.shared.grpc.messages.v1";
+
+message NotificationResponse {
+  string id = 1;
+  string event_key = 2;
+  string title = 3;
+  string message = 4;
+  bool status = 5;
+  optional string read_at = 6;
+  string created_at = 7;
+}
+
+message NotificationPageResponse {
+  repeated NotificationResponse content = 1;
+  PageResponse page = 2;
+}

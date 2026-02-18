@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package comandalivre.v1;
+
+import "messages/version_messages.proto";
+
+option java_multiple_files = true;
+option java_package = "io.github.pedroermarinho.shared.grpc.user.v1";
+option java_outer_classname = "VersionProto";
+
+
+service VersionService {
+  rpc GetLatestVersion (VersionRequest) returns (VersionResponse);
+  rpc CreateVersion (VersionRequest) returns (VersionResponse);
+}

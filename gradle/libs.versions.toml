@@ -1,8 +1,9 @@
 [versions]
-# --- Core Language & Frameworks ---
 
+# --- JVM ---
 jvm = "25"
 
+# --- Core Language & Frameworks ---
 kotlin = "2.3.10"
 springBoot = "4.0.2"
 springBootV4 = "4.0.0-M2"
@@ -24,22 +25,17 @@ redisTestContainer = "1.6.4"
 
 # --- Cloud & External Services ---
 awsSdk = "2.31.0"
-firebase = "9.4.3"
-grpcNetty = "1.79.0"
 
 # --- Tools & Utilities ---
 picocli = "4.7.7"
 snakeyaml = "2.5"
 nimbusJoseJwt = "10.5"
-jackson = "2.16.1"
 testContainer = "1.21.4"
 
 # --- Observability & Logging ---
 slf4j = "2.0.17"
 logback = "1.5.27"
 kotlinLogging = "7.0.14"
-micrometerTracing = "1.2.0"
-opentelemetry = "1.33.0"
 
 # --- Testing ---
 assertjCore = "3.25.3"
@@ -53,16 +49,13 @@ toxiproxy = "1.21.3"
 # --- Plugins ---
 jooqPlugin = "10.2"
 spotless = "7.0.4"
-adminServer = "3.5.0"
 
 # --- GRPC ---
+springGrpc = "1.0.2"
 protobufPlugin = "0.9.6"
+grpcKotlin = "1.5.0"
+grpc = "1.79.0"
 protoc = "4.33.5"
-grpcKotlinStub = "1.4.1"
-grpcProtobuf = "1.61.1"
-protobufKotlin = "3.25.3"
-protocGenGrpcJava = "1.79.0"
-protocGenGrpcKotlin = "1.5.0"
 
 [libraries]
 # --- Spring Boot Core ---
@@ -79,7 +72,6 @@ spring-boot-starter-data-redis = { group = "org.springframework.boot", name = "s
 spring-boot-starter-aop = { group = "org.springframework.boot", name = "spring-boot-starter-aop", version.ref = "springBootV4" }
 spring-boot-starter-jooq = { group = "org.springframework.boot", name = "spring-boot-starter-jooq" }
 spring-boot-configuration-processor = { group = "org.springframework.boot", name = "spring-boot-configuration-processor" }
-spring-boot-devtools = { group = "org.springframework.boot", name = "spring-boot-devtools" }
 spring-data-commons = { group = "org.springframework.data", name = "spring-data-commons" }
 spring-boot-starter = { group = "org.springframework.boot", name = "spring-boot-starter" }
 spring-web = { group = "org.springframework", name = "spring-web" }
@@ -117,12 +109,11 @@ caffeine = { group = "com.github.ben-manes.caffeine", name = "caffeine", version
 spring-dotenv-bom = { module = "me.paulschwarz:spring-dotenv-bom", version.ref = "springDotenv" }
 spring-dotenv = { group = "me.paulschwarz", name = "springboot4-dotenv", version.ref = "springDotenv" }
 nimbus-jose-jwt = { group = "com.nimbusds", name = "nimbus-jose-jwt", version.ref = "nimbusJoseJwt" }
-firebase-admin = { group = "com.google.firebase", name = "firebase-admin", version.ref = "firebase" }
 aws-s3 = { group = "software.amazon.awssdk", name = "s3", version.ref = "awsSdk" }
 picocli = { group = "info.picocli", name = "picocli", version.ref = "picocli" }
 snakeyaml = { group = "org.yaml", name = "snakeyaml", version.ref = "snakeyaml" }
 jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin" }
-grpc-netty = { group = "io.grpc", name = "grpc-netty", version.ref = "grpcNetty" }
+
 
 # --- OpenAPI ---
 springdoc-openapi-ui = { group = "org.springdoc", name = "springdoc-openapi-starter-webmvc-ui", version.ref = "springDoc" }
@@ -159,12 +150,15 @@ testcontainers-toxiproxy = { group = "org.testcontainers", name = "toxiproxy", v
 
 
 # ---  gRPC ---
-grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpcKotlinStub" }
-grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpcProtobuf" }
-protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protobufKotlin" }
-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protoc" }
-protoc-gen-grpc-java = { group = "io.grpc", name = "protoc-gen-grpc-java", version.ref = "protocGenGrpcJava" }
-protoc-gen-grpc-kotlin = { group = "io.grpc", name = "protoc-gen-grpc-kotlin", version.ref = "protocGenGrpcKotlin" }
+spring-grpc-bom = { module = "org.springframework.grpc:spring-grpc-dependencies", version.ref = "springGrpc" }
+spring-grpc-starter = { module = "org.springframework.grpc:spring-grpc-spring-boot-starter" }
+grpc-services = { module = "io.grpc:grpc-services" }
+spring-grpc-test = { module = "org.springframework.grpc:spring-grpc-test" }
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version.ref = "grpcKotlin" }
+protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version.ref = "protoc" }
+
+grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpc" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

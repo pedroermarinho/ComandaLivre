@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package comandalivre.v1;
+
+option java_multiple_files = true;
+option java_package = "io.github.pedroermarinho.shared.grpc.messages.v1";
+
+message PageableRequest {
+  int32 page_number = 1;
+  int32 page_size = 2;
+  repeated string sort = 3;
+  optional string direction = 4;
+}
+
+message PageResponse {
+  int64 total_elements = 1;
+  int32 total_pages = 2;
+  int32 number = 3;
+  int32 size = 4;
+  int32 number_of_elements = 5;
+  bool has_previous = 6;
+  bool has_next = 7;
+  bool first = 8;
+  bool last = 9;
+}

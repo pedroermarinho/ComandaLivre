@@ -1,7 +1,6 @@
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.buildpack.platform.build.PullPolicy
 import nu.studer.gradle.jooq.JooqEdition
-
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring)
@@ -10,6 +9,7 @@ plugins {
     alias(libs.plugins.jooq)
     alias(libs.plugins.liquibase)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.protobuf)
 }
 
 group = "io.github.pedroermarinho"
@@ -41,7 +41,9 @@ buildscript {
 dependencies {
     implementation(project(":libs:shared-common"))
 
+
     implementation(platform(libs.spring.dotenv.bom))
+    implementation(platform(libs.spring.grpc.bom))
 
     // --- Core Spring ---
     implementation(libs.spring.boot.starter.cache)
@@ -81,6 +83,14 @@ dependencies {
     liquibaseRuntime(libs.snakeyaml)
     liquibaseRuntime(libs.postgresql)
     liquibaseRuntime(libs.picocli)
+
+    // --- gRPC ---
+    implementation(libs.spring.grpc.starter)
+    implementation(libs.grpc.services)
+    implementation(libs.grpc.stub)
+    implementation(libs.grpc.protobuf)
+    implementation(libs.grpc.kotlin.stub)
+    implementation(libs.protobuf.kotlin)
 
     // --- Cache ---
     implementation(libs.caffeine)
@@ -122,6 +132,7 @@ dependencies {
     testImplementation(libs.testcontainers.redis)
     testImplementation(libs.testcontainers.toxiproxy)
     testImplementation(libs.mockk)
+
 }
 
 kotlin {
@@ -129,6 +140,34 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protoc.get()}"
+    }
+    plugins {
+        create("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
+        }
+        create("grpckt") {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${libs.versions.grpcKotlin.get()}:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                create("grpc") {
+                    option("@generated=omit")
+                }
+                create("grpckt")
+            }
+            it.builtins {
+                create("kotlin")
+            }
+        }
+    }
+}
+
 
 
 liquibase {

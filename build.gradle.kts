@@ -57,6 +57,7 @@ tasks.register("createCluster") {
         runCommand("kind", "create", "cluster", "--config", "k8s/cluster/kind-config.yaml", ignoreError = true)
 
         println("✅ Cluster verificado.\n")
+        Thread.sleep(15_000)
         println("\n📦 --- Instalando CloudNativePG Operator ---")
 
         runCommand("kubectl", "apply", "--server-side", "-f", "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.28/releases/cnpg-1.28.1.yaml")
@@ -100,8 +101,10 @@ tasks.register("ApplyDevOverlay") {
     group = "engineering-lab"
     description = "Aplica os manifestos K8s (Overlay Dev)."
 
+    dependsOn("createCluster")
+
     doLast {
-        runCommand("kubectl", "apply", "-k", "k8s/overlays/dev")
+        runCommand("kubectl", "apply", "-k", "k8s/overlays/dev", ignoreError = true)
     }
 }
 

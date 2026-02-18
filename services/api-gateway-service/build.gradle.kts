@@ -1,5 +1,6 @@
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.buildpack.platform.build.PullPolicy
+import com.google.protobuf.gradle.id
 
 plugins {
     alias(libs.plugins.kotlin.jvm)
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependency.management)
     alias(libs.plugins.spotless)
+    alias(libs.plugins.protobuf)
 }
 
 
@@ -36,6 +38,7 @@ dependencies {
 
     implementation(platform(libs.spring.cloud.dependencies))
     implementation(platform(libs.spring.dotenv.bom))
+    implementation(platform(libs.spring.grpc.bom))
 
     // --- Webflux & GraphQL ---
     implementation(libs.spring.boot.starter.graphql)
@@ -58,7 +61,12 @@ dependencies {
     implementation(libs.kotlinx.coroutines.reactor)
 
     // --- gRPC ---
-    implementation(libs.grpc.netty)
+    implementation(libs.spring.grpc.starter)
+    implementation(libs.grpc.services)
+    implementation(libs.grpc.stub)
+    implementation(libs.grpc.protobuf)
+    implementation(libs.grpc.kotlin.stub)
+    implementation(libs.protobuf.kotlin)
 
     // --- Observabilidade ---
     implementation(libs.spring.boot.starter.actuator)
@@ -82,6 +90,35 @@ dependencies {
     testImplementation(libs.spring.graphql.test)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
+
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${libs.versions.protoc.get()}"
+    }
+    plugins {
+        create("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
+        }
+        create("grpckt") {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${libs.versions.grpcKotlin.get()}:jdk8@jar"
+        }
+    }
+    generateProtoTasks {
+        all().forEach {
+            it.plugins {
+                create("grpc") {
+                    option("@generated=omit")
+                }
+                create("grpckt")
+            }
+            it.builtins {
+                create("kotlin")
+            }
+        }
+    }
+}
+
 
 kotlin {
     compilerOptions {

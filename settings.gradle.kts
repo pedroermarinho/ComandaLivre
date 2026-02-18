@@ -10,9 +10,9 @@ pluginManagement {
 include(":libs:shared-common")
 
 // Mapeamento dos microsserviços
-include(":services:comandalivre-service")
-include(":services:company-service")
+//include(":services:comandalivre-service")
+//include(":services:company-service")
 include(":services:user-service")
-include(":services:prumodigital-service")
+//include(":services:prumodigital-service")
 include(":services:api-gateway-service")
-include(":services:app-legacy-service")
+//include(":services:app-legacy-service")

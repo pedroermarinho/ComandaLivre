@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package comandalivre.v1;
+
+import "messages/page_messages.proto";
+import "messages/notification_messages.proto";
+
+option java_multiple_files = true;
+option java_package = "io.github.pedroermarinho.shared.grpc.user.v1";
+
+service NotificationService {
+  rpc GetAllNotifications (PageableRequest) returns (NotificationPageResponse);
+}

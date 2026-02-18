@@ -6,7 +6,9 @@ import org.springframework.boot.runApplication
 import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
-@SpringBootApplication
+@SpringBootApplication(
+    scanBasePackages = ["io.github.pedroermarinho"]
+)
 @EnableTransactionManagement
 @EnableAsync
 @ConfigurationPropertiesScan

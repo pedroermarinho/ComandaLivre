@@ -12,7 +12,7 @@ plugins {
 
 group = "io.github.pedroermarinho"
 version = "0.0.1-SNAPSHOT"
-description = "Demo project for Spring Boot"
+description = "Shared Common: codigo compartilhado entres os projetos"
 
 java {
     toolchain {
@@ -25,18 +25,26 @@ repositories {
 }
 
 dependencies {
+
+    implementation(platform(libs.spring.grpc.bom))
+
     // Coroutines
     implementation(libs.kotlinx.coroutines.core)
 
-    // Spring Boot Core (Usando 'api' pois é uma java-library)
+    // Spring Boot Core
     api(libs.spring.boot.starter)
     api(libs.spring.boot.starter.validation)
     api(libs.spring.data.commons)
     api(libs.spring.web)
 
     // gRPC & Protobuf Runtime
-    api(libs.grpc.kotlin.stub)
+    api(libs.spring.grpc.starter)
+    api(libs.grpc.services)
+
+    api(libs.grpc.stub)
     api(libs.grpc.protobuf)
+
+    api(libs.grpc.kotlin.stub)
     api(libs.protobuf.kotlin)
 
     // Logging
@@ -51,21 +59,26 @@ dependencies {
 
 protobuf {
     protoc {
-        artifact = "com.google.protobuf:protoc:${libs.versions.protoc}"
+        artifact = "com.google.protobuf:protoc:${libs.versions.protoc.get()}"
     }
     plugins {
-        id("grpc") {
-            artifact = libs.protoc.gen.grpc.java.get().toString()
+        create("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:${libs.versions.grpc.get()}"
         }
-        id("grpckt") {
-            artifact = "${libs.protoc.gen.grpc.kotlin.get()}:jdk8@jar"
+        create("grpckt") {
+            artifact = "io.grpc:protoc-gen-grpc-kotlin:${libs.versions.grpcKotlin.get()}:jdk8@jar"
         }
     }
     generateProtoTasks {
         all().forEach {
             it.plugins {
-                id("grpc")
-                id("grpckt")
+                create("grpc") {
+                    option("@generated=omit")
+                }
+                create("grpckt")
+            }
+            it.builtins {
+                create("kotlin")
             }
         }
     }

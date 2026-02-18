@@ -1,6 +1,6 @@
 package io.github.pedroermarinho.gateway.services
 
-import io.github.pedroermarinho.gateway.dtos.UserAuthDTO
+import io.github.pedroermarinho.shared.dtos.user.UserAuthDTO
 import io.github.pedroermarinho.shared.exceptions.NotFoundException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
@@ -24,7 +24,6 @@ class CurrentUserService{
         return UserAuthDTO(
             sub = userInfo.claims["sub"] as String,
             email = userInfo.claims["email"] as String,
-            emailVerified = userInfo.claims["email_verified"] as Boolean,
             name = userInfo.claims["name"] as String,
             picture = pictures?.takeIf { it.isNotBlank() },
         )
